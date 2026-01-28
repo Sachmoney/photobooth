@@ -634,8 +634,8 @@ footer {
 }
 
 .back-btn:hover {
-    color: var(--primary-color);
-    background: rgba(99, 102, 241, 0.1);
+    color: var(--gold);
+    background: rgba(212, 175, 55, 0.1);
 }
 
 /* Home Page Navigation Cards */
