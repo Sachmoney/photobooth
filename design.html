@@ -69,15 +69,212 @@
                     </div>
                 </div>
                 
+                <!-- Strip Preview Canvas -->
+                <div class="strip-preview-section" id="stripPreviewSection" style="display: none;">
+                    <h3>Strip Preview</h3>
+                    <div class="strip-preview-wrapper">
+                        <canvas id="stripPreviewCanvas"></canvas>
+                    </div>
+                </div>
+
+                <!-- Layout Settings -->
+                <div class="design-settings-section" id="layoutSection">
+                    <div class="settings-header" onclick="toggleSection('layoutContent')">
+                        <h3>📐 Layout Settings</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="settings-content" id="layoutContent">
+                        <div class="setting-group">
+                            <label for="layoutOrientation">Orientation:</label>
+                            <select id="layoutOrientation" class="setting-input">
+                                <option value="horizontal">Horizontal</option>
+                                <option value="vertical">Vertical</option>
+                            </select>
+                        </div>
+
+                        <div class="setting-group">
+                            <label for="layoutPhotoCount">Photos:</label>
+                            <select id="layoutPhotoCount" class="setting-input">
+                                <option value="2">2 Photos</option>
+                                <option value="3" selected>3 Photos</option>
+                                <option value="4">4 Photos</option>
+                            </select>
+                        </div>
+
+                        <div class="setting-group">
+                            <label for="layoutSpacing">Spacing:</label>
+                            <input type="range" id="layoutSpacing" min="0" max="50" value="10" class="setting-slider">
+                            <span id="layoutSpacingValue">10px</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Background Settings -->
+                <div class="design-settings-section" id="backgroundSection">
+                    <div class="settings-header" onclick="toggleSection('backgroundContent')">
+                        <h3>🎨 Background</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="settings-content" id="backgroundContent">
+                        <div class="setting-group">
+                            <label for="bgType">Type:</label>
+                            <select id="bgType" class="setting-input">
+                                <option value="solid">Solid Color</option>
+                                <option value="gradient">Gradient</option>
+                            </select>
+                        </div>
+
+                        <div class="setting-group" id="bgSolidGroup">
+                            <label for="bgColor">Color:</label>
+                            <input type="color" id="bgColor" value="#ffffff" class="color-input">
+                            <span id="bgColorValue">#ffffff</span>
+                        </div>
+
+                        <div id="bgGradientGroup" style="display: none;">
+                            <div class="setting-group">
+                                <label for="bgGradientStart">Start:</label>
+                                <input type="color" id="bgGradientStart" value="#ffffff" class="color-input">
+                                <span id="bgGradientStartValue">#ffffff</span>
+                            </div>
+                            <div class="setting-group">
+                                <label for="bgGradientEnd">End:</label>
+                                <input type="color" id="bgGradientEnd" value="#f0f0f0" class="color-input">
+                                <span id="bgGradientEndValue">#f0f0f0</span>
+                            </div>
+                            <div class="setting-group">
+                                <label for="bgGradientDirection">Direction:</label>
+                                <select id="bgGradientDirection" class="setting-input">
+                                    <option value="to bottom">Top to Bottom</option>
+                                    <option value="to right">Left to Right</option>
+                                    <option value="to bottom right">Diagonal ↘</option>
+                                    <option value="to bottom left">Diagonal ↙</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text Overlay Settings -->
+                <div class="design-settings-section" id="textSection">
+                    <div class="settings-header" onclick="toggleSection('textContent')">
+                        <h3>✏️ Text Overlay</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="settings-content" id="textContent">
+                        <div class="setting-group">
+                            <label for="textEnabled">Enable:</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="textEnabled">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div id="textOptions" style="display: none;">
+                            <div class="setting-group">
+                                <label for="textContent">Text:</label>
+                                <input type="text" id="textContentInput" class="setting-input" placeholder="Event name or message">
+                            </div>
+
+                            <div class="setting-group">
+                                <label for="textPosition">Position:</label>
+                                <select id="textPosition" class="setting-input">
+                                    <option value="top">Top</option>
+                                    <option value="bottom" selected>Bottom</option>
+                                </select>
+                            </div>
+
+                            <div class="setting-group">
+                                <label for="textFontSize">Size:</label>
+                                <input type="range" id="textFontSize" min="12" max="48" value="24" class="setting-slider">
+                                <span id="textFontSizeValue">24px</span>
+                            </div>
+
+                            <div class="setting-group">
+                                <label for="textFontFamily">Font:</label>
+                                <select id="textFontFamily" class="setting-input">
+                                    <option value="Arial">Arial</option>
+                                    <option value="Georgia">Georgia</option>
+                                    <option value="Times New Roman">Times New Roman</option>
+                                    <option value="Courier New">Courier New</option>
+                                    <option value="Verdana">Verdana</option>
+                                    <option value="Impact">Impact</option>
+                                    <option value="Comic Sans MS">Comic Sans MS</option>
+                                </select>
+                            </div>
+
+                            <div class="setting-group">
+                                <label for="textColor">Color:</label>
+                                <input type="color" id="textColor" value="#000000" class="color-input">
+                                <span id="textColorValue">#000000</span>
+                            </div>
+
+                            <div class="setting-group">
+                                <label for="textShowDate">Show Date:</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="textShowDate">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Border Settings -->
+                <div class="design-settings-section" id="borderSection">
+                    <div class="settings-header" onclick="toggleSection('borderContent')">
+                        <h3>🖼️ Border & Frame</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="settings-content" id="borderContent">
+                        <div class="setting-group">
+                            <label for="borderEnabled">Enable:</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="borderEnabled">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div id="borderOptions" style="display: none;">
+                            <div class="setting-group">
+                                <label for="borderWidth">Width:</label>
+                                <input type="range" id="borderWidth" min="1" max="20" value="2" class="setting-slider">
+                                <span id="borderWidthValue">2px</span>
+                            </div>
+
+                            <div class="setting-group">
+                                <label for="borderColor">Color:</label>
+                                <input type="color" id="borderColor" value="#000000" class="color-input">
+                                <span id="borderColorValue">#000000</span>
+                            </div>
+
+                            <div class="setting-group">
+                                <label for="borderStyle">Style:</label>
+                                <select id="borderStyle" class="setting-input">
+                                    <option value="solid">Solid</option>
+                                    <option value="dashed">Dashed</option>
+                                    <option value="double">Double</option>
+                                </select>
+                            </div>
+
+                            <div class="setting-group">
+                                <label for="borderRadius">Corners:</label>
+                                <input type="range" id="borderRadius" min="0" max="30" value="0" class="setting-slider">
+                                <span id="borderRadiusValue">0px</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overlay Design Settings (Original) -->
                 <div class="design-preview-container" id="designPreviewContainer" style="display: none;">
                     <div class="design-preview-wrapper">
                         <img id="designPreview" alt="Design Preview">
                     </div>
-                    
+
                     <div class="design-settings">
-                        <h3>Strip Design Settings</h3>
-                        <p class="setting-note">These settings apply to the photo strip overlay</p>
-                        
+                        <h3>Overlay Image Settings</h3>
+                        <p class="setting-note">Position and style your imported design overlay</p>
+
                         <div class="setting-group">
                             <label for="designPosition">Position:</label>
                             <select id="designPosition" class="setting-input">
@@ -93,13 +290,13 @@
                                 <option value="full-cover">Full Cover (Recommended)</option>
                             </select>
                         </div>
-                        
+
                         <div class="setting-group">
                             <label for="designSize">Size (%):</label>
                             <input type="range" id="designSize" min="10" max="100" value="100" class="setting-slider">
                             <span id="designSizeValue">100%</span>
                         </div>
-                        
+
                         <div class="setting-group">
                             <label for="designOpacity">Opacity:</label>
                             <input type="range" id="designOpacity" min="0" max="100" value="100" class="setting-slider">
