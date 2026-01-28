@@ -123,6 +123,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (borderStyle) borderStyle.addEventListener('change', updateAndSaveSettings);
     if (borderRadius) borderRadius.addEventListener('input', updateAndSaveSettings);
 
+    // 4x6 Photo / Corner Logo handlers
+    if (cornerLogoInput) cornerLogoInput.addEventListener('change', handleCornerLogoImport);
+    if (removeCornerLogoBtn) removeCornerLogoBtn.addEventListener('click', removeCornerLogo);
+    if (cornerLogoPosition) cornerLogoPosition.addEventListener('change', updateAndSaveSettings);
+    if (cornerLogoSize) cornerLogoSize.addEventListener('input', updateAndSaveSettings);
+    if (cornerLogoOpacity) cornerLogoOpacity.addEventListener('input', updateAndSaveSettings);
+    if (cornerLogoPadding) cornerLogoPadding.addEventListener('input', updateAndSaveSettings);
+
     // Load initial data
     loadSessions();
     loadActiveSession();
