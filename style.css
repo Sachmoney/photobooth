@@ -202,7 +202,7 @@ main {
 .setting-group span:last-child {
     min-width: 50px;
     text-align: right;
-    color: var(--primary-color);
+    color: var(--gold);
     font-weight: 600;
 }
 
