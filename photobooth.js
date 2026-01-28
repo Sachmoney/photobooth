@@ -46,6 +46,19 @@ loadSessionsDropdown();
 loadDesignFromStorage();
 loadDesignSettingsFromStorage();
 
+// Update photo strip button with correct count
+if (typeof updatePhotoStripButton === 'function') {
+    updatePhotoStripButton();
+} else {
+    // Fallback if function not yet defined
+    setTimeout(() => {
+        if (photoStripBtn && designSettings && designSettings.layout) {
+            const count = designSettings.layout.photoCount || 3;
+            photoStripBtn.innerHTML = `<span class="btn-icon">📸</span> Photo Strip (${count})`;
+        }
+    }, 100);
+}
+
 // Load available cameras on page load
 loadAvailableCameras();
 
