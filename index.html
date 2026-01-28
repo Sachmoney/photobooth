@@ -41,6 +41,47 @@
                         <p>View and print your photos</p>
                     </a>
                 </div>
+
+                <!-- Google Drive Settings -->
+                <div class="gdrive-settings-section">
+                    <h2>Google Drive Sync</h2>
+                    <p class="section-description">Auto-upload photos to Google Drive for backup and easy sharing.</p>
+
+                    <div class="gdrive-config">
+                        <div class="setting-group">
+                            <label for="gdriveClientId">Client ID:</label>
+                            <input type="text" id="gdriveClientId" class="setting-input" placeholder="Enter your Google OAuth Client ID">
+                            <button id="saveClientIdBtn" class="btn btn-secondary" style="padding: 10px 20px;">Save</button>
+                        </div>
+
+                        <div class="gdrive-status-row">
+                            <span id="driveStatus" class="drive-status not-configured">Not configured</span>
+                            <button id="driveConnectBtn" class="btn btn-primary" style="padding: 10px 20px;">
+                                <span class="btn-icon">🔗</span>
+                                Connect Google Drive
+                            </button>
+                            <button id="driveDisconnectBtn" class="btn btn-danger" style="padding: 10px 20px; display: none;">
+                                <span class="btn-icon">🔌</span>
+                                Disconnect
+                            </button>
+                        </div>
+
+                        <div class="gdrive-help">
+                            <details>
+                                <summary>How to get a Client ID</summary>
+                                <ol>
+                                    <li>Go to <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a></li>
+                                    <li>Create a new project (or select existing)</li>
+                                    <li>Enable the "Google Drive API"</li>
+                                    <li>Go to "APIs & Services" &gt; "OAuth consent screen" and configure it</li>
+                                    <li>Go to "Credentials" &gt; "Create Credentials" &gt; "OAuth client ID"</li>
+                                    <li>Choose "Web application" and add your site URL to authorized origins</li>
+                                    <li>Copy the Client ID and paste it above</li>
+                                </ol>
+                            </details>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
 
