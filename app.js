@@ -235,6 +235,15 @@ function getDefaultSettings() {
             color: '#000000',
             style: 'solid',
             radius: 0
+        },
+
+        // 4x6 Photo settings
+        photo4x6: {
+            cornerLogo: null,
+            position: 'bottom-right',
+            size: 15,
+            opacity: 100,
+            padding: 20
         }
     };
 }
