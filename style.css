@@ -610,8 +610,8 @@ footer {
 
 .footer-nav a:hover,
 .footer-nav a.active {
-    color: var(--primary-color);
-    background: rgba(99, 102, 241, 0.1);
+    color: var(--gold);
+    background: rgba(212, 175, 55, 0.1);
 }
 
 /* Header Navigation */
