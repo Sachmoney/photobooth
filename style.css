@@ -1073,6 +1073,254 @@ footer {
     font-size: 1.2rem;
 }
 
+/* Fullscreen Booth Mode */
+.fullscreen-booth {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+    z-index: 9999;
+}
+
+.fullscreen-booth.active {
+    display: block;
+}
+
+.fullscreen-booth video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1);
+}
+
+/* Fullscreen Countdown */
+.fullscreen-countdown {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.fullscreen-countdown.active {
+    display: flex;
+}
+
+.fullscreen-countdown-number {
+    font-size: 20rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 0 60px rgba(255, 255, 255, 0.8);
+    animation: pulse 1s ease-in-out;
+}
+
+/* Fullscreen Flash */
+.fullscreen-flash {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.fullscreen-flash.active {
+    animation: flash 0.3s ease-out;
+}
+
+/* Fullscreen Progress */
+.fullscreen-progress {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 15px 40px;
+    border-radius: 50px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: none;
+    z-index: 5;
+}
+
+.fullscreen-progress.active {
+    display: block;
+}
+
+.fullscreen-progress span span {
+    color: var(--gold);
+}
+
+/* Recording Indicator */
+.fullscreen-recording {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(239, 68, 68, 0.9);
+    color: white;
+    padding: 15px 40px;
+    border-radius: 50px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: none;
+    align-items: center;
+    gap: 15px;
+    z-index: 5;
+}
+
+.fullscreen-recording.active {
+    display: flex;
+}
+
+.recording-dot {
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    animation: pulse-recording 1.5s ease-in-out infinite;
+}
+
+/* Fullscreen Controls */
+.fullscreen-controls {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 40px;
+    z-index: 5;
+}
+
+.fullscreen-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 30px 50px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    font-size: 1.3rem;
+    min-width: 180px;
+}
+
+.fullscreen-btn.photo-btn {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: #000;
+}
+
+.fullscreen-btn.video-btn {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    color: white;
+}
+
+.fullscreen-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.fullscreen-btn:active {
+    transform: scale(0.98);
+}
+
+.fullscreen-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.fullscreen-btn-icon {
+    font-size: 4rem;
+}
+
+/* Exit Button */
+.exit-fullscreen-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.exit-fullscreen-btn:hover {
+    background: rgba(239, 68, 68, 0.8);
+    transform: scale(1.1);
+}
+
+/* Session Info */
+.fullscreen-session-info {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    z-index: 5;
+}
+
+.fullscreen-session-info span {
+    color: var(--gold);
+    font-weight: bold;
+}
+
+/* Hide controls during capture */
+.fullscreen-controls.hidden {
+    display: none;
+}
+
+/* Responsive fullscreen */
+@media (max-width: 768px) {
+    .fullscreen-countdown-number {
+        font-size: 12rem;
+    }
+
+    .fullscreen-btn {
+        padding: 20px 30px;
+        min-width: 140px;
+        font-size: 1.1rem;
+    }
+
+    .fullscreen-btn-icon {
+        font-size: 3rem;
+    }
+
+    .fullscreen-controls {
+        gap: 20px;
+        bottom: 30px;
+    }
+
+    .exit-fullscreen-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+}
+
 /* Design Settings Sections */
 .design-settings-section {
     background: var(--bg-card);
