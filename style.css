@@ -186,7 +186,7 @@ main {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: var(--primary-color);
+    background: var(--gold);
     cursor: pointer;
 }
 
@@ -194,7 +194,7 @@ main {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: var(--primary-color);
+    background: var(--gold);
     cursor: pointer;
     border: none;
 }
