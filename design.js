@@ -487,6 +487,11 @@ function updateAndSaveSettings() {
     if (borderColorValue && borderColor) borderColorValue.textContent = borderColor.value;
     if (borderRadiusValue && borderRadius) borderRadiusValue.textContent = borderRadius.value + 'px';
 
+    // 4x6 Photo display values
+    if (cornerLogoSizeValue && cornerLogoSize) cornerLogoSizeValue.textContent = cornerLogoSize.value + '%';
+    if (cornerLogoOpacityValue && cornerLogoOpacity) cornerLogoOpacityValue.textContent = cornerLogoOpacity.value + '%';
+    if (cornerLogoPaddingValue && cornerLogoPadding) cornerLogoPaddingValue.textContent = cornerLogoPadding.value + 'px';
+
     // Collect settings
     designSettings = collectSettingsFromUI();
 
