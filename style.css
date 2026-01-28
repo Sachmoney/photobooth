@@ -668,8 +668,8 @@ footer {
 
 .nav-card:hover {
     transform: translateY(-5px);
-    border-color: var(--primary-color);
-    box-shadow: 0 15px 35px rgba(99, 102, 241, 0.3);
+    border-color: var(--gold);
+    box-shadow: 0 15px 35px rgba(212, 175, 55, 0.3);
 }
 
 .nav-card-icon {
