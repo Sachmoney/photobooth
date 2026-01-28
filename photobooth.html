@@ -43,12 +43,12 @@
                 <div class="video-container">
                     <video id="video" autoplay playsinline></video>
                     <canvas id="canvas" style="display: none;"></canvas>
-                    
+
                     <!-- Countdown Overlay -->
                     <div class="countdown-overlay" id="countdownOverlay">
                         <div class="countdown-number" id="countdownNumber">3</div>
                     </div>
-                    
+
                     <!-- Flash Effect -->
                     <div class="flash-effect" id="flashEffect"></div>
                 </div>
@@ -70,7 +70,7 @@
                         <span class="btn-icon">🎥</span>
                         Start Camera
                     </button>
-                    
+
                     <div class="photo-controls" id="photoControls" style="display: none;">
                         <button id="singlePhotoBtn" class="btn btn-secondary">
                             <span class="btn-icon">📷</span>
@@ -88,11 +88,59 @@
                             <span class="btn-icon">🔄</span>
                             Switch Camera
                         </button>
+                        <button id="launchFullscreenBtn" class="btn btn-primary">
+                            <span class="btn-icon">🚀</span>
+                            Launch Booth
+                        </button>
                         <button id="stopBtn" class="btn btn-danger">
                             <span class="btn-icon">⏹</span>
                             Stop Camera
                         </button>
                     </div>
+                </div>
+            </div>
+
+            <!-- Fullscreen Booth Mode -->
+            <div class="fullscreen-booth" id="fullscreenBooth">
+                <video id="fullscreenVideo" autoplay playsinline></video>
+
+                <!-- Fullscreen Countdown Overlay -->
+                <div class="fullscreen-countdown" id="fullscreenCountdown">
+                    <div class="fullscreen-countdown-number" id="fullscreenCountdownNumber">3</div>
+                </div>
+
+                <!-- Fullscreen Flash Effect -->
+                <div class="fullscreen-flash" id="fullscreenFlash"></div>
+
+                <!-- Strip Progress in Fullscreen -->
+                <div class="fullscreen-progress" id="fullscreenProgress">
+                    <span>Photo <span id="fullscreenCurrentPhoto">1</span> of <span id="fullscreenTotalPhotos">3</span></span>
+                </div>
+
+                <!-- Recording Indicator -->
+                <div class="fullscreen-recording" id="fullscreenRecording">
+                    <span class="recording-dot"></span>
+                    <span>Recording...</span>
+                </div>
+
+                <!-- Fullscreen Controls -->
+                <div class="fullscreen-controls" id="fullscreenControls">
+                    <button id="fullscreenPhotoBtn" class="fullscreen-btn photo-btn">
+                        <span class="fullscreen-btn-icon">📸</span>
+                        <span>Photo Strip</span>
+                    </button>
+                    <button id="fullscreenVideoBtn" class="fullscreen-btn video-btn">
+                        <span class="fullscreen-btn-icon">🎬</span>
+                        <span>Video</span>
+                    </button>
+                </div>
+
+                <!-- Exit Button -->
+                <button id="exitFullscreenBtn" class="exit-fullscreen-btn">✕</button>
+
+                <!-- Session Info -->
+                <div class="fullscreen-session-info" id="fullscreenSessionInfo">
+                    <span id="fullscreenSessionName">Session Name</span>
                 </div>
             </div>
 
