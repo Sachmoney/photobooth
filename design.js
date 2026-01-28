@@ -394,6 +394,24 @@ function applySettingsToUI() {
     if (borderRadius) borderRadius.value = designSettings.border.radius;
     if (borderRadiusValue) borderRadiusValue.textContent = designSettings.border.radius + 'px';
     if (borderOptions) borderOptions.style.display = designSettings.border.enabled ? 'block' : 'none';
+
+    // 4x6 Photo settings
+    if (designSettings.photo4x6) {
+        if (cornerLogoPosition) cornerLogoPosition.value = designSettings.photo4x6.position || 'bottom-right';
+        if (cornerLogoSize) cornerLogoSize.value = designSettings.photo4x6.size || 15;
+        if (cornerLogoSizeValue) cornerLogoSizeValue.textContent = (designSettings.photo4x6.size || 15) + '%';
+        if (cornerLogoOpacity) cornerLogoOpacity.value = designSettings.photo4x6.opacity || 100;
+        if (cornerLogoOpacityValue) cornerLogoOpacityValue.textContent = (designSettings.photo4x6.opacity || 100) + '%';
+        if (cornerLogoPadding) cornerLogoPadding.value = designSettings.photo4x6.padding || 20;
+        if (cornerLogoPaddingValue) cornerLogoPaddingValue.textContent = (designSettings.photo4x6.padding || 20) + 'px';
+
+        if (designSettings.photo4x6.cornerLogo && cornerLogoImg) {
+            cornerLogoImg.src = designSettings.photo4x6.cornerLogo;
+            if (cornerLogoPreview) cornerLogoPreview.style.display = 'flex';
+        } else {
+            if (cornerLogoPreview) cornerLogoPreview.style.display = 'none';
+        }
+    }
 }
 
 // Collect settings from UI
