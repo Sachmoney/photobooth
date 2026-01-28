@@ -658,14 +658,25 @@ function loadDesignFromStorage() {
 // Load Design Settings from Storage
 function loadDesignSettingsFromStorage() {
     const activeSession = getActiveSession();
+    const defaultSettings = {
+        position: 'center',
+        size: 100,
+        opacity: 100,
+        layout: { orientation: 'horizontal', photoCount: 3, spacing: 10 },
+        background: { type: 'solid', color: '#ffffff', gradientStart: '#ffffff', gradientEnd: '#f0f0f0', gradientDirection: 'to bottom' },
+        text: { enabled: false, content: '', position: 'bottom', fontSize: 24, fontFamily: 'Arial', color: '#000000', showDate: false },
+        border: { enabled: false, width: 2, color: '#000000', style: 'solid', radius: 0 }
+    };
+
     if (activeSession && activeSession.settings) {
-        designSettings = activeSession.settings;
+        designSettings = { ...defaultSettings, ...activeSession.settings };
+        // Ensure nested objects exist
+        designSettings.layout = { ...defaultSettings.layout, ...(activeSession.settings.layout || {}) };
+        designSettings.background = { ...defaultSettings.background, ...(activeSession.settings.background || {}) };
+        designSettings.text = { ...defaultSettings.text, ...(activeSession.settings.text || {}) };
+        designSettings.border = { ...defaultSettings.border, ...(activeSession.settings.border || {}) };
     } else {
-        designSettings = {
-            position: 'center',
-            size: 100,
-            opacity: 100
-        };
+        designSettings = defaultSettings;
     }
 }
 
