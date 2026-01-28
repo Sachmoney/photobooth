@@ -278,18 +278,67 @@ function savePhoto(photoData) {
     const photos = getPhotosFromStorage();
     const photoId = Date.now();
     const activeSessionId = getActiveSessionId();
-    
-    const photoObj = { 
-        id: photoId, 
+
+    const photoObj = {
+        id: photoId,
         data: photoData,
         sessionId: activeSessionId || null,
         createdAt: new Date().toISOString()
     };
-    
+
     photos.push(photoObj);
     savePhotosToStorage(photos);
-    
+
     console.log('Photo saved:', photoId, 'Session:', activeSessionId);
+
+    // Auto-upload to Google Drive
+    uploadPhotoToGDrive(photoData, photoId, false);
+}
+
+// Upload photo to Google Drive
+async function uploadPhotoToGDrive(photoData, photoId, isStrip) {
+    // Check if gdrive module is available
+    if (typeof uploadToGDrive !== 'function') {
+        console.log('Google Drive module not loaded');
+        return;
+    }
+
+    // Check if configured
+    if (!isGDriveConfigured()) {
+        console.log('Google Drive not configured');
+        return;
+    }
+
+    // Get session name for folder
+    const activeSession = getActiveSession();
+    const sessionName = activeSession ? activeSession.name : 'Default Session';
+
+    // Generate filename
+    const date = new Date();
+    const dateStr = date.toISOString().slice(0, 10);
+    const timeStr = date.toTimeString().slice(0, 8).replace(/:/g, '');
+    const prefix = isStrip ? 'strip' : 'photo';
+    const fileName = `${prefix}-${dateStr}-${timeStr}.jpg`;
+
+    // Show uploading status
+    showUploadStatus('uploading');
+
+    try {
+        const result = await uploadToGDrive(photoData, fileName, sessionName);
+
+        if (result.success) {
+            showUploadStatus('success');
+            console.log('Photo uploaded to Google Drive');
+        } else if (result.queued) {
+            showUploadStatus('queued');
+            console.log('Photo queued for upload');
+        } else {
+            showUploadStatus('error', result.error);
+        }
+    } catch (error) {
+        console.error('Upload error:', error);
+        showUploadStatus('error', 'Upload failed');
+    }
 }
 
 // Create Photo Strip
