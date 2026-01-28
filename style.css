@@ -1033,7 +1033,7 @@ footer {
 .upload-indicator.uploading {
     background: var(--bg-card);
     color: var(--text-primary);
-    border: 1px solid var(--primary-color);
+    border: 1px solid var(--gold);
 }
 
 .upload-indicator.success {
