@@ -1244,6 +1244,11 @@ footer {
     transform: none;
 }
 
+.fullscreen-btn.recording {
+    background: linear-gradient(135deg, #ef4444, #f97316) !important;
+    animation: pulse-recording 1.5s ease-in-out infinite;
+}
+
 .fullscreen-btn-icon {
     font-size: 4rem;
 }
