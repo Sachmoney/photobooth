@@ -735,7 +735,7 @@ footer {
 }
 
 .gallery-stats span {
-    color: var(--primary-color);
+    color: var(--gold);
     font-weight: bold;
     font-size: 1.3rem;
 }
