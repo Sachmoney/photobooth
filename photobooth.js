@@ -633,12 +633,21 @@ function loadSessionsDropdown() {
 // Handle Session Change
 function handleSessionChange() {
     if (!sessionSelect) return;
-    
+
     const selectedSessionId = sessionSelect.value;
     if (selectedSessionId) {
         setActiveSessionId(selectedSessionId);
         loadDesignFromStorage();
         loadDesignSettingsFromStorage();
+        updatePhotoStripButton();
+    }
+}
+
+// Update photo strip button text with current photo count
+function updatePhotoStripButton() {
+    if (photoStripBtn && designSettings && designSettings.layout) {
+        const count = designSettings.layout.photoCount || 3;
+        photoStripBtn.innerHTML = `<span class="btn-icon">📸</span> Photo Strip (${count})`;
     }
 }
 
