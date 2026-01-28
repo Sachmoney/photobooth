@@ -21,6 +21,23 @@ const switchCameraBtn = document.getElementById('switchCameraBtn');
 const sessionSelect = document.getElementById('sessionSelect');
 const videoRecordBtn = document.getElementById('videoRecordBtn');
 
+// Fullscreen Booth DOM Elements
+const launchFullscreenBtn = document.getElementById('launchFullscreenBtn');
+const fullscreenBooth = document.getElementById('fullscreenBooth');
+const fullscreenVideo = document.getElementById('fullscreenVideo');
+const fullscreenCountdown = document.getElementById('fullscreenCountdown');
+const fullscreenCountdownNumber = document.getElementById('fullscreenCountdownNumber');
+const fullscreenFlash = document.getElementById('fullscreenFlash');
+const fullscreenProgress = document.getElementById('fullscreenProgress');
+const fullscreenCurrentPhoto = document.getElementById('fullscreenCurrentPhoto');
+const fullscreenTotalPhotos = document.getElementById('fullscreenTotalPhotos');
+const fullscreenRecording = document.getElementById('fullscreenRecording');
+const fullscreenControls = document.getElementById('fullscreenControls');
+const fullscreenPhotoBtn = document.getElementById('fullscreenPhotoBtn');
+const fullscreenVideoBtn = document.getElementById('fullscreenVideoBtn');
+const exitFullscreenBtn = document.getElementById('exitFullscreenBtn');
+const fullscreenSessionName = document.getElementById('fullscreenSessionName');
+
 // State
 let stream = null;
 let availableCameras = [];
@@ -30,6 +47,7 @@ let designSettings = null;
 let mediaRecorder = null;
 let recordedChunks = [];
 let isRecording = false;
+let isFullscreenMode = false;
 
 // Initialize
 if (cameraSelect) cameraSelect.addEventListener('change', handleCameraChange);
@@ -40,6 +58,12 @@ if (stopBtn) stopBtn.addEventListener('click', stopCamera);
 if (singlePhotoBtn) singlePhotoBtn.addEventListener('click', takePhoto);
 if (photoStripBtn) photoStripBtn.addEventListener('click', takePhotoStrip);
 if (videoRecordBtn) videoRecordBtn.addEventListener('click', toggleVideoRecording);
+
+// Fullscreen booth handlers
+if (launchFullscreenBtn) launchFullscreenBtn.addEventListener('click', launchFullscreenBooth);
+if (exitFullscreenBtn) exitFullscreenBtn.addEventListener('click', exitFullscreenBooth);
+if (fullscreenPhotoBtn) fullscreenPhotoBtn.addEventListener('click', takeFullscreenPhotoStrip);
+if (fullscreenVideoBtn) fullscreenVideoBtn.addEventListener('click', toggleFullscreenVideoRecording);
 
 // Load sessions and active session design
 loadSessionsDropdown();
