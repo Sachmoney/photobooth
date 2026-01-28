@@ -193,17 +193,60 @@ function getActiveSession() {
     return sessions.find(s => s.id === sessionId) || null;
 }
 
+// Default settings for new sessions
+function getDefaultSettings() {
+    return {
+        // Overlay settings
+        position: 'center',
+        size: 100,
+        opacity: 100,
+
+        // Layout settings
+        layout: {
+            orientation: 'horizontal',
+            photoCount: 3,
+            spacing: 10
+        },
+
+        // Background settings
+        background: {
+            type: 'solid',
+            color: '#ffffff',
+            gradientStart: '#ffffff',
+            gradientEnd: '#f0f0f0',
+            gradientDirection: 'to bottom'
+        },
+
+        // Text overlay settings
+        text: {
+            enabled: false,
+            content: '',
+            position: 'bottom',
+            fontSize: 24,
+            fontFamily: 'Arial',
+            color: '#000000',
+            showDate: false
+        },
+
+        // Border settings
+        border: {
+            enabled: false,
+            width: 0,
+            color: '#000000',
+            style: 'solid',
+            radius: 0
+        }
+    };
+}
+
 function createSession(name, designData, settings) {
     const sessions = getSessions();
+    const defaultSettings = getDefaultSettings();
     const newSession = {
         id: Date.now().toString(),
         name: name || `Session ${sessions.length + 1}`,
         design: designData,
-        settings: settings || {
-            position: 'center',
-            size: 100,
-            opacity: 100
-        },
+        settings: settings ? { ...defaultSettings, ...settings } : defaultSettings,
         createdAt: new Date().toISOString()
     };
     sessions.push(newSession);
