@@ -398,6 +398,9 @@ function applySettingsToUI() {
 
 // Collect settings from UI
 function collectSettingsFromUI() {
+    // Preserve existing corner logo if present
+    const existingCornerLogo = designSettings && designSettings.photo4x6 ? designSettings.photo4x6.cornerLogo : null;
+
     return {
         // Overlay
         position: designPosition ? designPosition.value : 'center',
@@ -438,6 +441,15 @@ function collectSettingsFromUI() {
             color: borderColor ? borderColor.value : '#000000',
             style: borderStyle ? borderStyle.value : 'solid',
             radius: borderRadius ? parseInt(borderRadius.value) : 0
+        },
+
+        // 4x6 Photo settings
+        photo4x6: {
+            cornerLogo: existingCornerLogo,
+            position: cornerLogoPosition ? cornerLogoPosition.value : 'bottom-right',
+            size: cornerLogoSize ? parseInt(cornerLogoSize.value) : 15,
+            opacity: cornerLogoOpacity ? parseInt(cornerLogoOpacity.value) : 100,
+            padding: cornerLogoPadding ? parseInt(cornerLogoPadding.value) : 20
         }
     };
 }
