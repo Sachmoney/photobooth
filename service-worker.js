@@ -1,4 +1,4 @@
-const CACHE_NAME = 'photobooth-v2';
+const CACHE_NAME = 'photobooth-v3';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -10,6 +10,7 @@ const urlsToCache = [
   '/photobooth.js',
   '/design.js',
   '/print.js',
+  '/gdrive.js',
   '/manifest.json'
   // Note: icon files are optional, service worker will work without them
 ];
