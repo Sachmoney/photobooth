@@ -60,6 +60,19 @@ const borderStyle = document.getElementById('borderStyle');
 const borderRadius = document.getElementById('borderRadius');
 const borderRadiusValue = document.getElementById('borderRadiusValue');
 
+// DOM Elements - 4x6 Photo Settings
+const cornerLogoInput = document.getElementById('cornerLogoInput');
+const cornerLogoPreview = document.getElementById('cornerLogoPreview');
+const cornerLogoImg = document.getElementById('cornerLogoImg');
+const removeCornerLogoBtn = document.getElementById('removeCornerLogoBtn');
+const cornerLogoPosition = document.getElementById('cornerLogoPosition');
+const cornerLogoSize = document.getElementById('cornerLogoSize');
+const cornerLogoSizeValue = document.getElementById('cornerLogoSizeValue');
+const cornerLogoOpacity = document.getElementById('cornerLogoOpacity');
+const cornerLogoOpacityValue = document.getElementById('cornerLogoOpacityValue');
+const cornerLogoPadding = document.getElementById('cornerLogoPadding');
+const cornerLogoPaddingValue = document.getElementById('cornerLogoPaddingValue');
+
 // DOM Elements - Preview
 const stripPreviewSection = document.getElementById('stripPreviewSection');
 const stripPreviewCanvas = document.getElementById('stripPreviewCanvas');
