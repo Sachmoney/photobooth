@@ -370,46 +370,189 @@ function createCombinedStrip(stripPhotos) {
     return new Promise((resolve) => {
         const stripCanvas = document.createElement('canvas');
         const stripCtx = stripCanvas.getContext('2d');
-        
+
+        // Get settings with defaults
+        const settings = designSettings || {
+            layout: { orientation: 'horizontal', photoCount: 3, spacing: 10 },
+            background: { type: 'solid', color: '#ffffff' },
+            text: { enabled: false },
+            border: { enabled: false }
+        };
+
         const photoWidth = 400;
         const photoHeight = 533;
         const padding = 20;
-        const gap = 10;
-        
-        stripCanvas.width = (photoWidth * 3) + (padding * 2) + (gap * 2);
-        stripCanvas.height = photoHeight + (padding * 2);
-        
-        stripCtx.fillStyle = 'white';
-        stripCtx.fillRect(0, 0, stripCanvas.width, stripCanvas.height);
-        
+        const spacing = settings.layout ? settings.layout.spacing : 10;
+        const photoCount = stripPhotos.length;
+        const isVertical = settings.layout && settings.layout.orientation === 'vertical';
+
+        // Calculate text area
+        let textAreaHeight = 0;
+        if (settings.text && settings.text.enabled && (settings.text.content || settings.text.showDate)) {
+            textAreaHeight = (settings.text.fontSize || 24) + 30;
+        }
+
+        // Calculate canvas dimensions based on orientation
+        let canvasWidth, canvasHeight;
+        if (isVertical) {
+            canvasWidth = photoWidth + (padding * 2);
+            canvasHeight = (photoHeight * photoCount) + (padding * 2) + (spacing * (photoCount - 1)) + textAreaHeight;
+        } else {
+            canvasWidth = (photoWidth * photoCount) + (padding * 2) + (spacing * (photoCount - 1));
+            canvasHeight = photoHeight + (padding * 2) + textAreaHeight;
+        }
+
+        stripCanvas.width = canvasWidth;
+        stripCanvas.height = canvasHeight;
+
+        // Draw background
+        if (settings.background && settings.background.type === 'gradient') {
+            let gradient;
+            const dir = settings.background.gradientDirection || 'to bottom';
+            switch (dir) {
+                case 'to right':
+                    gradient = stripCtx.createLinearGradient(0, 0, canvasWidth, 0);
+                    break;
+                case 'to bottom right':
+                    gradient = stripCtx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
+                    break;
+                case 'to bottom left':
+                    gradient = stripCtx.createLinearGradient(canvasWidth, 0, 0, canvasHeight);
+                    break;
+                default:
+                    gradient = stripCtx.createLinearGradient(0, 0, 0, canvasHeight);
+            }
+            gradient.addColorStop(0, settings.background.gradientStart || '#ffffff');
+            gradient.addColorStop(1, settings.background.gradientEnd || '#f0f0f0');
+            stripCtx.fillStyle = gradient;
+        } else {
+            stripCtx.fillStyle = settings.background ? settings.background.color : '#ffffff';
+        }
+
+        // Draw background with rounded corners if needed
+        const borderRadius = settings.border && settings.border.enabled ? (settings.border.radius || 0) : 0;
+        if (borderRadius > 0) {
+            roundRectPath(stripCtx, 0, 0, canvasWidth, canvasHeight, borderRadius);
+            stripCtx.fill();
+        } else {
+            stripCtx.fillRect(0, 0, canvasWidth, canvasHeight);
+        }
+
+        // Calculate text position offset
+        let textYOffset = settings.text && settings.text.position === 'top' && textAreaHeight > 0 ? textAreaHeight : 0;
+
         let loadedCount = 0;
-        
+
         stripPhotos.forEach((photoData, index) => {
             const img = new Image();
             img.onload = () => {
-                const x = padding + (index * (photoWidth + gap));
-                stripCtx.drawImage(img, x, padding, photoWidth, photoHeight);
-                
+                let x, y;
+                if (isVertical) {
+                    x = padding;
+                    y = padding + textYOffset + (index * (photoHeight + spacing));
+                } else {
+                    x = padding + (index * (photoWidth + spacing));
+                    y = padding + textYOffset;
+                }
+                stripCtx.drawImage(img, x, y, photoWidth, photoHeight);
+
                 loadedCount++;
                 if (loadedCount === stripPhotos.length) {
-                    if (stripDesignImage) {
-                        applyStripDesignOverlay(stripCtx, stripCanvas.width, stripCanvas.height);
-                    }
-                    resolve(stripCanvas.toDataURL('image/jpeg', 0.95));
+                    finishStrip();
                 }
             };
             img.onerror = () => {
                 loadedCount++;
                 if (loadedCount === stripPhotos.length) {
-                    if (stripDesignImage) {
-                        applyStripDesignOverlay(stripCtx, stripCanvas.width, stripCanvas.height);
-                    }
-                    resolve(stripCanvas.toDataURL('image/jpeg', 0.95));
+                    finishStrip();
                 }
             };
             img.src = photoData;
         });
+
+        function finishStrip() {
+            // Draw text overlay
+            if (settings.text && settings.text.enabled && (settings.text.content || settings.text.showDate)) {
+                stripCtx.fillStyle = settings.text.color || '#000000';
+                stripCtx.font = `${settings.text.fontSize || 24}px ${settings.text.fontFamily || 'Arial'}`;
+                stripCtx.textAlign = 'center';
+                stripCtx.textBaseline = 'middle';
+
+                let textContent = settings.text.content || '';
+                if (settings.text.showDate) {
+                    const dateStr = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                    textContent = textContent ? `${textContent} • ${dateStr}` : dateStr;
+                }
+
+                let textY;
+                if (settings.text.position === 'top') {
+                    textY = padding + textAreaHeight / 2;
+                } else {
+                    textY = canvasHeight - padding - textAreaHeight / 2 + 15;
+                }
+
+                stripCtx.fillText(textContent, canvasWidth / 2, textY);
+            }
+
+            // Draw design overlay
+            if (stripDesignImage) {
+                applyStripDesignOverlay(stripCtx, canvasWidth, canvasHeight);
+            }
+
+            // Draw border
+            if (settings.border && settings.border.enabled && settings.border.width > 0) {
+                stripCtx.strokeStyle = settings.border.color || '#000000';
+                stripCtx.lineWidth = settings.border.width;
+
+                if (settings.border.style === 'dashed') {
+                    stripCtx.setLineDash([10, 5]);
+                } else if (settings.border.style === 'double') {
+                    stripCtx.setLineDash([]);
+                    const offset = settings.border.width / 2;
+                    if (borderRadius > 0) {
+                        roundRectPath(stripCtx, offset, offset, canvasWidth - settings.border.width, canvasHeight - settings.border.width, borderRadius);
+                        stripCtx.stroke();
+                    } else {
+                        stripCtx.strokeRect(offset, offset, canvasWidth - settings.border.width, canvasHeight - settings.border.width);
+                    }
+                    const innerOffset = settings.border.width * 1.5;
+                    const innerRadius = Math.max(0, borderRadius - settings.border.width);
+                    if (borderRadius > 0) {
+                        roundRectPath(stripCtx, innerOffset, innerOffset, canvasWidth - innerOffset * 2, canvasHeight - innerOffset * 2, innerRadius);
+                        stripCtx.stroke();
+                    } else {
+                        stripCtx.strokeRect(innerOffset, innerOffset, canvasWidth - innerOffset * 2, canvasHeight - innerOffset * 2);
+                    }
+                } else {
+                    stripCtx.setLineDash([]);
+                    const offset = settings.border.width / 2;
+                    if (borderRadius > 0) {
+                        roundRectPath(stripCtx, offset, offset, canvasWidth - settings.border.width, canvasHeight - settings.border.width, borderRadius);
+                        stripCtx.stroke();
+                    } else {
+                        stripCtx.strokeRect(offset, offset, canvasWidth - settings.border.width, canvasHeight - settings.border.width);
+                    }
+                }
+            }
+
+            resolve(stripCanvas.toDataURL('image/jpeg', 0.95));
+        }
     });
+}
+
+// Helper function to draw rounded rectangle path
+function roundRectPath(ctx, x, y, width, height, radius) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
 }
 
 // Apply Strip Design Overlay
