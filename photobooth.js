@@ -59,12 +59,14 @@ if (startBtn) startBtn.addEventListener('click', startCamera);
 if (stopBtn) stopBtn.addEventListener('click', stopCamera);
 if (singlePhotoBtn) singlePhotoBtn.addEventListener('click', takePhoto);
 if (photoStripBtn) photoStripBtn.addEventListener('click', takePhotoStrip);
+if (photo4x6Btn) photo4x6Btn.addEventListener('click', take4x6Photo);
 if (videoRecordBtn) videoRecordBtn.addEventListener('click', toggleVideoRecording);
 
 // Fullscreen booth handlers
 if (launchFullscreenBtn) launchFullscreenBtn.addEventListener('click', launchFullscreenBooth);
 if (exitFullscreenBtn) exitFullscreenBtn.addEventListener('click', exitFullscreenBooth);
 if (fullscreenPhotoBtn) fullscreenPhotoBtn.addEventListener('click', takeFullscreenPhotoStrip);
+if (fullscreen4x6Btn) fullscreen4x6Btn.addEventListener('click', takeFullscreen4x6Photo);
 if (fullscreenVideoBtn) fullscreenVideoBtn.addEventListener('click', toggleFullscreenVideoRecording);
 
 // Load sessions and active session design
