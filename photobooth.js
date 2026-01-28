@@ -192,36 +192,37 @@ function takePhoto() {
 
 // Take Photo Strip
 async function takePhotoStrip() {
-    const numPhotos = 3;
+    // Get photo count from settings
+    const numPhotos = designSettings && designSettings.layout ? designSettings.layout.photoCount : 3;
     if (totalPhotosSpan) totalPhotosSpan.textContent = numPhotos;
     if (stripProgress) stripProgress.style.display = 'block';
-    
+
     if (singlePhotoBtn) singlePhotoBtn.disabled = true;
     if (photoStripBtn) photoStripBtn.disabled = true;
-    
+
     const stripPhotos = [];
-    
+
     for (let i = 1; i <= numPhotos; i++) {
         if (currentPhotoSpan) currentPhotoSpan.textContent = i;
-        
+
         if (i > 1) {
             await sleep(2000);
         }
-        
+
         const photo = await takePhotoWithCountdown();
         if (photo) {
             stripPhotos.push(photo);
         }
     }
-    
+
     if (stripPhotos.length === numPhotos) {
         createPhotoStrip(stripPhotos);
     }
-    
+
     if (singlePhotoBtn) singlePhotoBtn.disabled = false;
     if (photoStripBtn) photoStripBtn.disabled = false;
     if (stripProgress) stripProgress.style.display = 'none';
-    
+
     loadQuickGallery();
 }
 
