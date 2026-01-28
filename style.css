@@ -384,19 +384,22 @@ main {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: #000;
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #7c7ff5, #a78bfa);
+    background: linear-gradient(135deg, var(--gold-light), #ffe066);
 }
 
 .btn-secondary {
-    background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    background: linear-gradient(135deg, #333333, #4a4a4a);
+    border: 1px solid var(--gold);
 }
 
 .btn-secondary:hover {
-    background: linear-gradient(135deg, #60a5fa, #22d3ee);
+    background: linear-gradient(135deg, #4a4a4a, #5a5a5a);
+    border-color: var(--gold-light);
 }
 
 .btn-danger {
