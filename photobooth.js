@@ -866,3 +866,320 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// =============================================
+// FULLSCREEN BOOTH MODE
+// =============================================
+
+// Launch fullscreen booth
+function launchFullscreenBooth() {
+    if (!stream) {
+        alert('Please start the camera first');
+        return;
+    }
+
+    const activeSession = getActiveSession();
+    if (!activeSession) {
+        alert('Please select a session first');
+        return;
+    }
+
+    isFullscreenMode = true;
+
+    // Connect stream to fullscreen video
+    if (fullscreenVideo) {
+        fullscreenVideo.srcObject = stream;
+    }
+
+    // Update session name display
+    if (fullscreenSessionName) {
+        fullscreenSessionName.textContent = activeSession.name;
+    }
+
+    // Show fullscreen booth
+    if (fullscreenBooth) {
+        fullscreenBooth.classList.add('active');
+    }
+
+    // Request fullscreen
+    const elem = fullscreenBooth || document.documentElement;
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(err => {
+            console.log('Fullscreen request failed:', err);
+        });
+    } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+    }
+
+    // Listen for fullscreen exit
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+}
+
+// Handle fullscreen change events
+function handleFullscreenChange() {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        // Exited fullscreen
+        if (isFullscreenMode) {
+            exitFullscreenBooth();
+        }
+    }
+}
+
+// Exit fullscreen booth
+function exitFullscreenBooth() {
+    isFullscreenMode = false;
+
+    // Hide fullscreen booth
+    if (fullscreenBooth) {
+        fullscreenBooth.classList.remove('active');
+    }
+
+    // Stop any recording in progress
+    if (isRecording) {
+        stopFullscreenVideoRecording();
+    }
+
+    // Exit browser fullscreen if still active
+    if (document.fullscreenElement || document.webkitFullscreenElement) {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
+    }
+
+    // Reset UI states
+    if (fullscreenProgress) fullscreenProgress.classList.remove('active');
+    if (fullscreenRecording) fullscreenRecording.classList.remove('active');
+    if (fullscreenControls) fullscreenControls.classList.remove('hidden');
+    if (fullscreenPhotoBtn) fullscreenPhotoBtn.disabled = false;
+    if (fullscreenVideoBtn) fullscreenVideoBtn.disabled = false;
+
+    // Refresh gallery
+    loadQuickGallery();
+}
+
+// Take photo strip in fullscreen mode
+async function takeFullscreenPhotoStrip() {
+    if (!stream || !isFullscreenMode) return;
+
+    const numPhotos = designSettings && designSettings.layout ? designSettings.layout.photoCount : 3;
+
+    // Update UI
+    if (fullscreenTotalPhotos) fullscreenTotalPhotos.textContent = numPhotos;
+    if (fullscreenProgress) fullscreenProgress.classList.add('active');
+    if (fullscreenControls) fullscreenControls.classList.add('hidden');
+
+    const stripPhotos = [];
+
+    for (let i = 1; i <= numPhotos; i++) {
+        if (fullscreenCurrentPhoto) fullscreenCurrentPhoto.textContent = i;
+
+        if (i > 1) {
+            await sleep(2000);
+        }
+
+        const photo = await takeFullscreenPhotoWithCountdown();
+        if (photo) {
+            stripPhotos.push(photo);
+        }
+    }
+
+    // Hide progress
+    if (fullscreenProgress) fullscreenProgress.classList.remove('active');
+
+    if (stripPhotos.length === numPhotos) {
+        // Create the strip
+        const combinedStrip = await createCombinedStrip(stripPhotos);
+        const photoId = Date.now();
+        const activeSessionId = getActiveSessionId();
+
+        const photos = getPhotosFromStorage();
+        photos.push({
+            id: photoId,
+            data: combinedStrip,
+            isStrip: true,
+            stripPhotos: stripPhotos,
+            sessionId: activeSessionId || null,
+            createdAt: new Date().toISOString()
+        });
+        savePhotosToStorage(photos);
+
+        // Auto-upload to Google Drive
+        uploadPhotoToGDrive(combinedStrip, photoId, true);
+    }
+
+    // Show controls again
+    if (fullscreenControls) fullscreenControls.classList.remove('hidden');
+}
+
+// Take single photo with countdown in fullscreen mode
+async function takeFullscreenPhotoWithCountdown() {
+    return new Promise((resolve) => {
+        let count = 3;
+        if (fullscreenCountdown) fullscreenCountdown.classList.add('active');
+        if (fullscreenCountdownNumber) fullscreenCountdownNumber.textContent = count;
+
+        const countdownInterval = setInterval(() => {
+            count--;
+            if (count > 0) {
+                if (fullscreenCountdownNumber) fullscreenCountdownNumber.textContent = count;
+            } else {
+                if (fullscreenCountdownNumber) fullscreenCountdownNumber.textContent = '📸';
+                clearInterval(countdownInterval);
+
+                setTimeout(() => {
+                    const photo = captureFullscreenPhoto();
+                    if (fullscreenCountdown) fullscreenCountdown.classList.remove('active');
+                    resolve(photo);
+                }, 300);
+            }
+        }, 1000);
+    });
+}
+
+// Capture photo from fullscreen video
+function captureFullscreenPhoto() {
+    if (!fullscreenVideo || !canvas) return null;
+
+    canvas.width = fullscreenVideo.videoWidth;
+    canvas.height = fullscreenVideo.videoHeight;
+
+    const ctx = canvas.getContext('2d');
+    ctx.translate(canvas.width, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(fullscreenVideo, 0, 0, canvas.width, canvas.height);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+    // Flash effect
+    if (fullscreenFlash) {
+        fullscreenFlash.classList.add('active');
+        setTimeout(() => {
+            fullscreenFlash.classList.remove('active');
+        }, 300);
+    }
+
+    return canvas.toDataURL('image/jpeg', 0.95);
+}
+
+// Toggle video recording in fullscreen mode
+async function toggleFullscreenVideoRecording() {
+    if (!stream || !isFullscreenMode) return;
+
+    if (isRecording) {
+        stopFullscreenVideoRecording();
+    } else {
+        startFullscreenVideoRecording();
+    }
+}
+
+// Start video recording in fullscreen
+function startFullscreenVideoRecording() {
+    if (!stream) return;
+
+    recordedChunks = [];
+    const options = { mimeType: 'video/webm;codecs=vp9' };
+
+    try {
+        mediaRecorder = new MediaRecorder(stream, options);
+    } catch (e) {
+        try {
+            mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+        } catch (e2) {
+            mediaRecorder = new MediaRecorder(stream);
+        }
+    }
+
+    mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+            recordedChunks.push(event.data);
+        }
+    };
+
+    mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        saveFullscreenVideo(url);
+    };
+
+    mediaRecorder.start();
+    isRecording = true;
+
+    // Update UI
+    if (fullscreenRecording) fullscreenRecording.classList.add('active');
+    if (fullscreenControls) fullscreenControls.classList.add('hidden');
+    if (fullscreenPhotoBtn) fullscreenPhotoBtn.disabled = true;
+
+    // Change video button to stop
+    if (fullscreenVideoBtn) {
+        fullscreenVideoBtn.innerHTML = '<span class="fullscreen-btn-icon">⏹</span><span>Stop</span>';
+        fullscreenVideoBtn.classList.add('recording');
+        fullscreenVideoBtn.disabled = false;
+    }
+
+    // Show controls for stop button
+    if (fullscreenControls) fullscreenControls.classList.remove('hidden');
+
+    // Auto-stop after 1 minute
+    setTimeout(() => {
+        if (isRecording && isFullscreenMode) {
+            stopFullscreenVideoRecording();
+        }
+    }, 60000);
+}
+
+// Stop video recording in fullscreen
+function stopFullscreenVideoRecording() {
+    if (mediaRecorder && isRecording) {
+        mediaRecorder.stop();
+        isRecording = false;
+
+        // Update UI
+        if (fullscreenRecording) fullscreenRecording.classList.remove('active');
+        if (fullscreenPhotoBtn) fullscreenPhotoBtn.disabled = false;
+
+        // Reset video button
+        if (fullscreenVideoBtn) {
+            fullscreenVideoBtn.innerHTML = '<span class="fullscreen-btn-icon">🎬</span><span>Video</span>';
+            fullscreenVideoBtn.classList.remove('recording');
+        }
+    }
+}
+
+// Save video recorded in fullscreen
+function saveFullscreenVideo(videoUrl) {
+    const videoId = Date.now();
+    const videos = getVideosFromStorage();
+
+    videos.push({
+        id: videoId,
+        url: videoUrl,
+        sessionId: getActiveSessionId() || null,
+        createdAt: new Date().toISOString()
+    });
+
+    saveVideosToStorage(videos);
+
+    // Show brief confirmation without leaving fullscreen
+    if (fullscreenRecording) {
+        fullscreenRecording.innerHTML = '<span class="recording-dot" style="background: #10b981;"></span><span>Video Saved!</span>';
+        fullscreenRecording.classList.add('active');
+        fullscreenRecording.style.background = 'rgba(16, 185, 129, 0.9)';
+
+        setTimeout(() => {
+            fullscreenRecording.classList.remove('active');
+            fullscreenRecording.innerHTML = '<span class="recording-dot"></span><span>Recording...</span>';
+            fullscreenRecording.style.background = '';
+        }, 2000);
+    }
+}
+
+// Handle escape key in fullscreen
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isFullscreenMode) {
+        exitFullscreenBooth();
+    }
+});
+
