@@ -1,0 +1,9 @@
+[build]
+  publish = "."
+
+# Optional: Add headers for better caching/security
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
