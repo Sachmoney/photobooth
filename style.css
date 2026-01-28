@@ -1219,6 +1219,11 @@ footer {
     min-width: 180px;
 }
 
+.fullscreen-btn.photo4x6-btn {
+    background: linear-gradient(135deg, #10b981, #34d399);
+    color: white;
+}
+
 .fullscreen-btn.photo-btn {
     background: linear-gradient(135deg, var(--gold), var(--gold-light));
     color: #000;
