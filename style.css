@@ -768,13 +768,13 @@ footer {
 }
 
 .session-item:hover {
-    border-color: var(--primary-color);
-    background: rgba(99, 102, 241, 0.1);
+    border-color: var(--gold);
+    background: rgba(212, 175, 55, 0.1);
 }
 
 .session-item.active {
-    border-color: var(--primary-color);
-    background: rgba(99, 102, 241, 0.2);
+    border-color: var(--gold);
+    background: rgba(212, 175, 55, 0.2);
 }
 
 .session-info {
