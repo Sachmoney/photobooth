@@ -856,7 +856,7 @@ footer {
 }
 
 .session-select:hover {
-    border-color: var(--primary-color);
+    border-color: var(--gold);
 }
 
 .session-select:focus {
