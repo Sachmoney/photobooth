@@ -327,6 +327,173 @@ function savePhoto(photoData) {
     uploadPhotoToGDrive(photoData, photoId, false);
 }
 
+// Take 4x6 Photo
+async function take4x6Photo() {
+    const photo = await takePhotoWithCountdown();
+    if (photo) {
+        const photo4x6 = await create4x6Photo(photo);
+        save4x6Photo(photo4x6);
+        loadQuickGallery();
+    }
+}
+
+// Create 4x6 Photo with corner logo
+async function create4x6Photo(photoData) {
+    return new Promise((resolve) => {
+        const photoCanvas = document.createElement('canvas');
+        const ctx = photoCanvas.getContext('2d');
+
+        // 4x6 at 300 DPI = 1200x1800 pixels (portrait)
+        const canvasWidth = 1800;
+        const canvasHeight = 1200;
+
+        photoCanvas.width = canvasWidth;
+        photoCanvas.height = canvasHeight;
+
+        // Get settings
+        const settings = designSettings || {};
+        const photo4x6Settings = settings.photo4x6 || {
+            position: 'bottom-right',
+            size: 15,
+            opacity: 100,
+            padding: 20,
+            cornerLogo: null
+        };
+
+        // Draw background
+        if (settings.background && settings.background.type === 'gradient') {
+            let gradient;
+            const dir = settings.background.gradientDirection || 'to bottom';
+            switch (dir) {
+                case 'to right':
+                    gradient = ctx.createLinearGradient(0, 0, canvasWidth, 0);
+                    break;
+                case 'to bottom right':
+                    gradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
+                    break;
+                case 'to bottom left':
+                    gradient = ctx.createLinearGradient(canvasWidth, 0, 0, canvasHeight);
+                    break;
+                default:
+                    gradient = ctx.createLinearGradient(0, 0, 0, canvasHeight);
+            }
+            gradient.addColorStop(0, settings.background.gradientStart || '#ffffff');
+            gradient.addColorStop(1, settings.background.gradientEnd || '#f0f0f0');
+            ctx.fillStyle = gradient;
+        } else {
+            ctx.fillStyle = settings.background ? settings.background.color : '#ffffff';
+        }
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+        // Load and draw the photo
+        const img = new Image();
+        img.onload = () => {
+            // Calculate photo dimensions to fill canvas while maintaining aspect ratio
+            const imgAspect = img.width / img.height;
+            const canvasAspect = canvasWidth / canvasHeight;
+
+            let drawWidth, drawHeight, drawX, drawY;
+
+            if (imgAspect > canvasAspect) {
+                // Image is wider - fit to height
+                drawHeight = canvasHeight;
+                drawWidth = drawHeight * imgAspect;
+                drawX = (canvasWidth - drawWidth) / 2;
+                drawY = 0;
+            } else {
+                // Image is taller - fit to width
+                drawWidth = canvasWidth;
+                drawHeight = drawWidth / imgAspect;
+                drawX = 0;
+                drawY = (canvasHeight - drawHeight) / 2;
+            }
+
+            ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+
+            // Draw corner logo if available
+            if (photo4x6Settings.cornerLogo) {
+                const logoImg = new Image();
+                logoImg.onload = () => {
+                    const logoSize = (photo4x6Settings.size / 100) * Math.min(canvasWidth, canvasHeight);
+                    const logoAspect = logoImg.width / logoImg.height;
+                    let logoWidth, logoHeight;
+
+                    if (logoAspect > 1) {
+                        logoWidth = logoSize;
+                        logoHeight = logoSize / logoAspect;
+                    } else {
+                        logoHeight = logoSize;
+                        logoWidth = logoSize * logoAspect;
+                    }
+
+                    const padding = photo4x6Settings.padding;
+                    let logoX, logoY;
+
+                    switch (photo4x6Settings.position) {
+                        case 'top-left':
+                            logoX = padding;
+                            logoY = padding;
+                            break;
+                        case 'top-right':
+                            logoX = canvasWidth - logoWidth - padding;
+                            logoY = padding;
+                            break;
+                        case 'bottom-left':
+                            logoX = padding;
+                            logoY = canvasHeight - logoHeight - padding;
+                            break;
+                        case 'bottom-right':
+                        default:
+                            logoX = canvasWidth - logoWidth - padding;
+                            logoY = canvasHeight - logoHeight - padding;
+                            break;
+                    }
+
+                    ctx.save();
+                    ctx.globalAlpha = photo4x6Settings.opacity / 100;
+                    ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoHeight);
+                    ctx.restore();
+
+                    resolve(photoCanvas.toDataURL('image/jpeg', 0.95));
+                };
+                logoImg.onerror = () => {
+                    resolve(photoCanvas.toDataURL('image/jpeg', 0.95));
+                };
+                logoImg.src = photo4x6Settings.cornerLogo;
+            } else {
+                resolve(photoCanvas.toDataURL('image/jpeg', 0.95));
+            }
+        };
+        img.onerror = () => {
+            resolve(photoCanvas.toDataURL('image/jpeg', 0.95));
+        };
+        img.src = photoData;
+    });
+}
+
+// Save 4x6 Photo
+function save4x6Photo(photoData) {
+    const photos = getPhotosFromStorage();
+    const photoId = Date.now();
+    const activeSessionId = getActiveSessionId();
+
+    const photoObj = {
+        id: photoId,
+        data: photoData,
+        is4x6: true,
+        sessionId: activeSessionId || null,
+        createdAt: new Date().toISOString()
+    };
+
+    photos.push(photoObj);
+    savePhotosToStorage(photos);
+
+    console.log('4x6 Photo saved:', photoId, 'Session:', activeSessionId);
+
+    // Auto-upload to Google Drive
+    uploadPhotoToGDrive(photoData, photoId, false);
+}
+
 // Upload photo to Google Drive
 async function uploadPhotoToGDrive(photoData, photoId, isStrip) {
     // Check if gdrive module is available
