@@ -294,24 +294,23 @@ function getDesignFromStorage() {
 // Legacy compatibility - get settings from active session or fallback
 function getDesignSettingsFromStorage() {
     const activeSession = getActiveSession();
+    const defaultSettings = getDefaultSettings();
+
     if (activeSession && activeSession.settings) {
-        return activeSession.settings;
+        // Merge with defaults to ensure new settings exist
+        return { ...defaultSettings, ...activeSession.settings };
     }
     // Fallback to legacy storage
     try {
         const saved = localStorage.getItem(StorageKeys.DESIGN_SETTINGS);
-        return saved ? JSON.parse(saved) : {
-            position: 'center',
-            size: 100,
-            opacity: 100
-        };
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            return { ...defaultSettings, ...parsed };
+        }
+        return defaultSettings;
     } catch (error) {
         console.error('Error loading design settings:', error);
-        return {
-            position: 'center',
-            size: 100,
-            opacity: 100
-        };
+        return defaultSettings;
     }
 }
 
