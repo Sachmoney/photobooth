@@ -255,7 +255,7 @@ main {
 }
 
 .camera-select:hover {
-    border-color: var(--primary-color);
+    border-color: var(--gold);
 }
 
 .camera-select:focus {
