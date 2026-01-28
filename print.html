@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <meta name="description" content="PhotoBooth - Print Photos">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>PhotoBooth - Print Photos</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📸</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-nav">
+                <a href="index.html" class="back-btn">← Home</a>
+                <h1>🖨️ FE2P Print Photos</h1>
+                <p style="margin-top: 5px; color: var(--text-secondary); font-size: 0.9rem;">Flawless Events 2 Perfection</p>
+            </div>
+        </header>
+
+        <main>
+            <!-- Gallery Section -->
+            <div class="gallery-section" id="gallerySection">
+                <h2>Your Photos</h2>
+                
+                <div class="gallery-stats" id="galleryStats" style="display: none;">
+                    <p><span id="photoCount">0</span> photo(s) in gallery</p>
+                </div>
+
+                <div class="gallery" id="gallery">
+                    <p class="empty-gallery">No photos yet. Take some pictures!</p>
+                </div>
+                
+                <div class="gallery-actions" style="display: none;" id="galleryActions">
+                    <button id="clearGalleryBtn" class="btn btn-danger">
+                        <span class="btn-icon">🗑️</span>
+                        Clear Gallery
+                    </button>
+                    <button id="printAllBtn" class="btn btn-primary">
+                        <span class="btn-icon">🖨️</span>
+                        Print All Photos
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <nav class="footer-nav">
+                <a href="index.html">Home</a>
+                <a href="photobooth.html">Photo Booth</a>
+                <a href="design.html">Design</a>
+                <a href="print.html" class="active">Print</a>
+            </nav>
+        </footer>
+    </div>
+
+    <script src="print.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+

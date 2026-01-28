@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <meta name="description" content="PhotoBooth - Custom Design">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>PhotoBooth - Custom Design</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📸</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-nav">
+                <a href="index.html" class="back-btn">← Home</a>
+                <h1>🎨 FE2P Custom Design</h1>
+                <p style="margin-top: 5px; color: var(--text-secondary); font-size: 0.9rem;">Flawless Events 2 Perfection</p>
+            </div>
+        </header>
+
+        <main>
+            <!-- Sessions Section -->
+            <div class="sessions-section">
+                <h2>🎯 Design Sessions</h2>
+                <p class="section-description">Manage preset design sessions for different events or occasions</p>
+                
+                <div class="sessions-list" id="sessionsList">
+                    <!-- Sessions will be loaded here -->
+                </div>
+                
+                <button id="createSessionBtn" class="btn btn-primary" style="margin-top: 20px;">
+                    <span class="btn-icon">➕</span>
+                    Create New Session
+                </button>
+            </div>
+
+            <!-- Active Session Design Section -->
+            <div class="design-section" id="designSection">
+                <h2>Current Session Design</h2>
+                <div id="noActiveSession" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                    <p>No active session selected.</p>
+                    <p style="margin-top: 10px; font-size: 0.9rem;">Create or select a session to start designing!</p>
+                </div>
+                
+                <div id="activeSessionContent" style="display: none;">
+                    <div class="session-header">
+                        <h3 id="sessionNameDisplay">Session Name</h3>
+                        <button id="saveSessionBtn" class="btn btn-secondary">
+                            <span class="btn-icon">💾</span>
+                            Save Changes
+                        </button>
+                    </div>
+                    
+                    <div class="design-controls">
+                        <label for="stripDesignInput" class="file-input-label">
+                            <span class="btn-icon">📁</span>
+                            Import Strip Design from Canva
+                            <input type="file" id="stripDesignInput" accept="image/*" style="display: none;">
+                        </label>
+                        
+                        <button id="removeDesignBtn" class="btn btn-danger" style="display: none;">
+                            <span class="btn-icon">🗑️</span>
+                            Remove Design
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="design-preview-container" id="designPreviewContainer" style="display: none;">
+                    <div class="design-preview-wrapper">
+                        <img id="designPreview" alt="Design Preview">
+                    </div>
+                    
+                    <div class="design-settings">
+                        <h3>Strip Design Settings</h3>
+                        <p class="setting-note">These settings apply to the photo strip overlay</p>
+                        
+                        <div class="setting-group">
+                            <label for="designPosition">Position:</label>
+                            <select id="designPosition" class="setting-input">
+                                <option value="top-left">Top Left</option>
+                                <option value="top-center">Top Center</option>
+                                <option value="top-right">Top Right</option>
+                                <option value="center-left">Center Left</option>
+                                <option value="center" selected>Center</option>
+                                <option value="center-right">Center Right</option>
+                                <option value="bottom-left">Bottom Left</option>
+                                <option value="bottom-center">Bottom Center</option>
+                                <option value="bottom-right">Bottom Right</option>
+                                <option value="full-cover">Full Cover (Recommended)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="setting-group">
+                            <label for="designSize">Size (%):</label>
+                            <input type="range" id="designSize" min="10" max="100" value="100" class="setting-slider">
+                            <span id="designSizeValue">100%</span>
+                        </div>
+                        
+                        <div class="setting-group">
+                            <label for="designOpacity">Opacity:</label>
+                            <input type="range" id="designOpacity" min="0" max="100" value="100" class="setting-slider">
+                            <span id="designOpacityValue">100%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <nav class="footer-nav">
+                <a href="index.html">Home</a>
+                <a href="photobooth.html">Photo Booth</a>
+                <a href="design.html" class="active">Design</a>
+                <a href="print.html">Print</a>
+            </nav>
+        </footer>
+    </div>
+
+    <script src="design.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+

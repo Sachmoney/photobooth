@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <meta name="description" content="PhotoBooth - Take Photos">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>FE2P PhotoBooth - Camera</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📸</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-nav">
+                <a href="index.html" class="back-btn">← Home</a>
+                <h1>📸 FE2P Photo Booth</h1>
+                <p style="margin-top: 5px; color: var(--text-secondary); font-size: 0.9rem;">Flawless Events 2 Perfection</p>
+            </div>
+        </header>
+
+        <main>
+            <!-- Session Selector -->
+            <div class="session-selector-section">
+                <label for="sessionSelect" class="session-select-label">
+                    <span class="btn-icon">🎯</span>
+                    Active Session:
+                </label>
+                <select id="sessionSelect" class="session-select">
+                    <option value="">Loading sessions...</option>
+                </select>
+                <a href="design.html" class="btn btn-secondary" style="margin-left: 10px;">
+                    <span class="btn-icon">🎨</span>
+                    Manage Sessions
+                </a>
+            </div>
+
+            <!-- Camera Preview Section -->
+            <div class="camera-section" id="cameraSection">
+                <div class="video-container">
+                    <video id="video" autoplay playsinline></video>
+                    <canvas id="canvas" style="display: none;"></canvas>
+                    
+                    <!-- Countdown Overlay -->
+                    <div class="countdown-overlay" id="countdownOverlay">
+                        <div class="countdown-number" id="countdownNumber">3</div>
+                    </div>
+                    
+                    <!-- Flash Effect -->
+                    <div class="flash-effect" id="flashEffect"></div>
+                </div>
+
+                <!-- Camera Selection -->
+                <div class="camera-selection" id="cameraSelection" style="display: none;">
+                    <label for="cameraSelect" class="camera-select-label">
+                        <span class="btn-icon">📹</span>
+                        Camera:
+                    </label>
+                    <select id="cameraSelect" class="camera-select">
+                        <option value="">Loading cameras...</option>
+                    </select>
+                </div>
+
+                <!-- Controls -->
+                <div class="controls">
+                    <button id="startBtn" class="btn btn-primary">
+                        <span class="btn-icon">🎥</span>
+                        Start Camera
+                    </button>
+                    
+                    <div class="photo-controls" id="photoControls" style="display: none;">
+                        <button id="singlePhotoBtn" class="btn btn-secondary">
+                            <span class="btn-icon">📷</span>
+                            Take Photo
+                        </button>
+                        <button id="photoStripBtn" class="btn btn-secondary">
+                            <span class="btn-icon">📸</span>
+                            Photo Strip (3)
+                        </button>
+                        <button id="videoRecordBtn" class="btn btn-secondary">
+                            <span class="btn-icon">🎬</span>
+                            Record Video (1 min)
+                        </button>
+                        <button id="switchCameraBtn" class="btn btn-secondary" style="display: none;">
+                            <span class="btn-icon">🔄</span>
+                            Switch Camera
+                        </button>
+                        <button id="stopBtn" class="btn btn-danger">
+                            <span class="btn-icon">⏹</span>
+                            Stop Camera
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Photo Strip Progress -->
+            <div class="strip-progress" id="stripProgress" style="display: none;">
+                <p>Photo <span id="currentPhoto">1</span> of <span id="totalPhotos">3</span></p>
+            </div>
+
+            <!-- Quick Gallery Preview -->
+            <div class="quick-gallery-section">
+                <h2>Recent Photos</h2>
+                <div class="quick-gallery" id="quickGallery">
+                    <p class="empty-gallery">No photos yet. Take some pictures!</p>
+                </div>
+                <a href="print.html" class="btn btn-primary" style="margin-top: 15px;">
+                    <span class="btn-icon">🖼️</span>
+                    View All Photos
+                </a>
+            </div>
+        </main>
+
+        <footer>
+            <nav class="footer-nav">
+                <a href="index.html">Home</a>
+                <a href="photobooth.html" class="active">Photo Booth</a>
+                <a href="design.html">Design</a>
+                <a href="print.html">Print</a>
+            </nav>
+        </footer>
+    </div>
+
+    <script src="photobooth.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+
