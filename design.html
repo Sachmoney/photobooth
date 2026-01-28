@@ -108,6 +108,61 @@
                     </div>
                 </div>
 
+                <!-- 4x6 Photo Settings -->
+                <div class="design-settings-section" id="photo4x6Section">
+                    <div class="settings-header" onclick="toggleSection('photo4x6Content')">
+                        <h3>🖼️ 4x6 Photo Settings</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="settings-content" id="photo4x6Content">
+                        <p class="setting-note">Settings for single 4x6 print-ready photos</p>
+
+                        <div class="setting-group">
+                            <label>Corner Logo:</label>
+                            <label for="cornerLogoInput" class="file-input-label" style="padding: 10px 20px; font-size: 0.9rem;">
+                                <span class="btn-icon">📁</span>
+                                Upload Logo
+                                <input type="file" id="cornerLogoInput" accept="image/*" style="display: none;">
+                            </label>
+                        </div>
+
+                        <div id="cornerLogoPreview" style="display: none; margin: 15px 0;">
+                            <img id="cornerLogoImg" style="max-width: 100px; max-height: 100px; border-radius: 8px;">
+                            <button id="removeCornerLogoBtn" class="btn btn-danger" style="margin-left: 10px; padding: 8px 15px;">
+                                <span class="btn-icon">🗑️</span> Remove
+                            </button>
+                        </div>
+
+                        <div class="setting-group">
+                            <label for="cornerLogoPosition">Position:</label>
+                            <select id="cornerLogoPosition" class="setting-input">
+                                <option value="top-left">Top Left</option>
+                                <option value="top-right">Top Right</option>
+                                <option value="bottom-left">Bottom Left</option>
+                                <option value="bottom-right" selected>Bottom Right</option>
+                            </select>
+                        </div>
+
+                        <div class="setting-group">
+                            <label for="cornerLogoSize">Logo Size:</label>
+                            <input type="range" id="cornerLogoSize" min="5" max="30" value="15" class="setting-slider">
+                            <span id="cornerLogoSizeValue">15%</span>
+                        </div>
+
+                        <div class="setting-group">
+                            <label for="cornerLogoOpacity">Opacity:</label>
+                            <input type="range" id="cornerLogoOpacity" min="20" max="100" value="100" class="setting-slider">
+                            <span id="cornerLogoOpacityValue">100%</span>
+                        </div>
+
+                        <div class="setting-group">
+                            <label for="cornerLogoPadding">Padding:</label>
+                            <input type="range" id="cornerLogoPadding" min="10" max="50" value="20" class="setting-slider">
+                            <span id="cornerLogoPaddingValue">20px</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Background Settings -->
                 <div class="design-settings-section" id="backgroundSection">
                     <div class="settings-header" onclick="toggleSection('backgroundContent')">
