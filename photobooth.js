@@ -346,19 +346,22 @@ async function createPhotoStrip(stripPhotos) {
     const combinedStrip = await createCombinedStrip(stripPhotos);
     const photoId = Date.now();
     const activeSessionId = getActiveSessionId();
-    
+
     const photos = getPhotosFromStorage();
-    photos.push({ 
-        id: photoId, 
-        data: combinedStrip, 
+    photos.push({
+        id: photoId,
+        data: combinedStrip,
         isStrip: true,
         stripPhotos: stripPhotos,
         sessionId: activeSessionId || null,
         createdAt: new Date().toISOString()
     });
     savePhotosToStorage(photos);
-    
+
     console.log('Photo strip saved:', photoId, 'Session:', activeSessionId);
+
+    // Auto-upload strip to Google Drive
+    uploadPhotoToGDrive(combinedStrip, photoId, true);
 }
 
 // Create Combined Strip Image
