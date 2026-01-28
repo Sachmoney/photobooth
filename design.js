@@ -539,6 +539,67 @@ function removeDesign() {
     updateStripPreview();
 }
 
+// Handle Corner Logo Import
+function handleCornerLogoImport(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+        alert('Please select an image file');
+        return;
+    }
+
+    if (!currentSessionId) {
+        alert('Please create or select a session first');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const logoData = e.target.result;
+
+        if (cornerLogoImg) {
+            cornerLogoImg.src = logoData;
+        }
+        if (cornerLogoPreview) {
+            cornerLogoPreview.style.display = 'flex';
+        }
+
+        // Update settings
+        if (!designSettings.photo4x6) {
+            designSettings.photo4x6 = {};
+        }
+        designSettings.photo4x6.cornerLogo = logoData;
+
+        // Auto-save
+        updateSession(currentSessionId, {
+            settings: designSettings
+        });
+
+        loadSessions();
+    };
+    reader.readAsDataURL(file);
+}
+
+// Remove Corner Logo
+function removeCornerLogo() {
+    if (!currentSessionId) return;
+
+    if (cornerLogoImg) cornerLogoImg.src = '';
+    if (cornerLogoInput) cornerLogoInput.value = '';
+    if (cornerLogoPreview) cornerLogoPreview.style.display = 'none';
+
+    if (designSettings.photo4x6) {
+        designSettings.photo4x6.cornerLogo = null;
+    }
+
+    updateSession(currentSessionId, {
+        settings: designSettings
+    });
+
+    loadSessions();
+}
+
 // Update Strip Preview
 function updateStripPreview() {
     if (!stripPreviewCanvas || !designSettings) return;
