@@ -895,3 +895,176 @@ footer {
     }
 }
 
+/* Google Drive Settings Section */
+.gdrive-settings-section {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    margin-top: 30px;
+}
+
+.gdrive-settings-section h2 {
+    margin-bottom: 10px;
+    font-size: 1.8rem;
+}
+
+.gdrive-config {
+    margin-top: 20px;
+}
+
+.gdrive-status-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.drive-status {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.drive-status.connected {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--success-color);
+    border: 1px solid var(--success-color);
+}
+
+.drive-status.disconnected {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--danger-color);
+    border: 1px solid var(--danger-color);
+}
+
+.drive-status.not-configured {
+    background: rgba(203, 213, 225, 0.1);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.gdrive-help {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.gdrive-help details {
+    cursor: pointer;
+}
+
+.gdrive-help summary {
+    color: var(--text-secondary);
+    font-weight: 500;
+    padding: 10px 0;
+}
+
+.gdrive-help ol {
+    margin-top: 15px;
+    padding-left: 25px;
+    color: var(--text-secondary);
+    line-height: 2;
+}
+
+.gdrive-help a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.gdrive-help a:hover {
+    text-decoration: underline;
+}
+
+/* Mini status bar for photobooth page */
+.gdrive-mini-status {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+    flex-wrap: wrap;
+}
+
+.btn-small {
+    padding: 8px 16px !important;
+    font-size: 0.9rem !important;
+}
+
+/* Upload Status Indicator */
+.upload-indicator {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.upload-indicator.uploading {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--primary-color);
+}
+
+.upload-indicator.success {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--success-color);
+    border: 1px solid var(--success-color);
+}
+
+.upload-indicator.queued {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+    border: 1px solid #f59e0b;
+}
+
+.upload-indicator.error {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--danger-color);
+    border: 1px solid var(--danger-color);
+}
+
+.upload-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--primary-color);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.upload-icon {
+    font-size: 1.2rem;
+}
+
