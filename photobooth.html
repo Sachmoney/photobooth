@@ -38,6 +38,41 @@
                 </a>
             </div>
 
+            <!-- Quick Logo Upload -->
+            <div class="quick-logo-section" id="quickLogoSection">
+                <div class="quick-logo-header">
+                    <span class="btn-icon">🏷️</span>
+                    <span>Corner Logo</span>
+                </div>
+                <div class="quick-logo-content">
+                    <div class="logo-preview-area" id="logoPreviewArea">
+                        <img id="quickLogoPreview" style="display: none;">
+                        <div id="logoPlaceholder" class="logo-placeholder">
+                            <span>📁</span>
+                            <span>Click or paste logo</span>
+                        </div>
+                    </div>
+                    <div class="logo-actions">
+                        <label for="quickLogoInput" class="btn btn-secondary btn-small">
+                            <span class="btn-icon">📤</span> Upload
+                            <input type="file" id="quickLogoInput" accept="image/*" style="display: none;">
+                        </label>
+                        <button id="removeQuickLogoBtn" class="btn btn-danger btn-small" style="display: none;">
+                            <span class="btn-icon">🗑️</span> Remove
+                        </button>
+                    </div>
+                    <div class="logo-position-select">
+                        <label>Position:</label>
+                        <select id="quickLogoPosition" class="setting-input">
+                            <option value="top-left">Top Left</option>
+                            <option value="top-right">Top Right</option>
+                            <option value="bottom-left">Bottom Left</option>
+                            <option value="bottom-right" selected>Bottom Right</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             <!-- Camera Preview Section -->
             <div class="camera-section" id="cameraSection">
                 <div class="video-container">
