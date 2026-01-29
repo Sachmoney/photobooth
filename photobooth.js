@@ -78,6 +78,15 @@ if (fullscreenPhotoBtn) fullscreenPhotoBtn.addEventListener('click', takeFullscr
 if (fullscreen4x6Btn) fullscreen4x6Btn.addEventListener('click', takeFullscreen4x6Photo);
 if (fullscreenVideoBtn) fullscreenVideoBtn.addEventListener('click', toggleFullscreenVideoRecording);
 
+// Quick logo handlers
+if (quickLogoInput) quickLogoInput.addEventListener('change', handleQuickLogoUpload);
+if (logoPreviewArea) logoPreviewArea.addEventListener('click', () => quickLogoInput && quickLogoInput.click());
+if (removeQuickLogoBtn) removeQuickLogoBtn.addEventListener('click', removeQuickLogo);
+if (quickLogoPosition) quickLogoPosition.addEventListener('change', updateQuickLogoPosition);
+
+// Handle paste for logo
+document.addEventListener('paste', handleLogoPaste);
+
 // Load sessions and active session design
 loadSessionsDropdown();
 loadDesignFromStorage();
