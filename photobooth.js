@@ -75,7 +75,6 @@ if (videoRecordBtn) videoRecordBtn.addEventListener('click', toggleVideoRecordin
 if (launchFullscreenBtn) launchFullscreenBtn.addEventListener('click', launchFullscreenBooth);
 if (exitFullscreenBtn) exitFullscreenBtn.addEventListener('click', exitFullscreenBooth);
 if (fullscreenPhotoBtn) fullscreenPhotoBtn.addEventListener('click', takeFullscreenPhotoStrip);
-if (fullscreen4x6Btn) fullscreen4x6Btn.addEventListener('click', takeFullscreen4x6Photo);
 if (fullscreenCollageBtn) fullscreenCollageBtn.addEventListener('click', takeFullscreen4x6Collage);
 if (fullscreenVideoBtn) fullscreenVideoBtn.addEventListener('click', toggleFullscreenVideoRecording);
 
