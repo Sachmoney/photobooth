@@ -22,6 +22,15 @@ const sessionSelect = document.getElementById('sessionSelect');
 const videoRecordBtn = document.getElementById('videoRecordBtn');
 const photo4x6Btn = document.getElementById('photo4x6Btn');
 
+// Quick Logo DOM Elements
+const quickLogoSection = document.getElementById('quickLogoSection');
+const quickLogoInput = document.getElementById('quickLogoInput');
+const quickLogoPreview = document.getElementById('quickLogoPreview');
+const logoPreviewArea = document.getElementById('logoPreviewArea');
+const logoPlaceholder = document.getElementById('logoPlaceholder');
+const removeQuickLogoBtn = document.getElementById('removeQuickLogoBtn');
+const quickLogoPosition = document.getElementById('quickLogoPosition');
+
 // Fullscreen Booth DOM Elements
 const launchFullscreenBtn = document.getElementById('launchFullscreenBtn');
 const fullscreenBooth = document.getElementById('fullscreenBooth');
