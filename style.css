@@ -1307,6 +1307,41 @@ footer {
     font-size: 0.9rem;
 }
 
+/* Collage Preview */
+.collage-preview {
+    margin: 15px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.collage-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 5px;
+    width: 150px;
+    height: 100px;
+    background: var(--bg-dark);
+    padding: 5px;
+    border-radius: 8px;
+}
+
+.collage-cell {
+    background: #666;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.collage-cell.logo-cell {
+    background: var(--gold);
+    color: #000;
+}
+
 .fullscreen-btn.photo4x6-btn {
     background: linear-gradient(135deg, #10b981, #34d399);
     color: white;
