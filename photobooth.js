@@ -1318,23 +1318,6 @@ function exitFullscreenBooth() {
     loadQuickGallery();
 }
 
-// Take 4x6 photo in fullscreen mode
-async function takeFullscreen4x6Photo() {
-    if (!stream || !isFullscreenMode) return;
-
-    // Hide controls
-    if (fullscreenControls) fullscreenControls.classList.add('hidden');
-
-    const photo = await takeFullscreenPhotoWithCountdown();
-    if (photo) {
-        const photo4x6 = await create4x6Photo(photo);
-        save4x6Photo(photo4x6);
-    }
-
-    // Show controls again
-    if (fullscreenControls) fullscreenControls.classList.remove('hidden');
-}
-
 // Take 4x6 collage in fullscreen mode
 async function takeFullscreen4x6Collage() {
     if (!stream || !isFullscreenMode) return;
