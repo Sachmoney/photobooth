@@ -343,37 +343,104 @@ function downloadPhoto(photoData, filename) {
     link.click();
 }
 
-// Text Photo utility
+// Text Photo utility - works on mobile and Windows
 function textPhoto(photoData) {
     // Create a blob from the data URL
     fetch(photoData)
         .then(res => res.blob())
-        .then(blob => {
+        .then(async blob => {
             const file = new File([blob], 'fe2p-photo.jpg', { type: 'image/jpeg' });
-            const url = URL.createObjectURL(file);
-            
-            // Try to use share API first (works on mobile)
+
+            // Try to use share API first (works on mobile and some browsers)
             if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                navigator.share({
-                    files: [file],
-                    title: 'FE2P PhotoBooth Photo',
-                    text: 'Check out my photo from Flawless Events 2 Perfection!'
-                }).catch(err => {
-                    // Fallback to SMS link
-                    const smsLink = `sms:?body=${encodeURIComponent('Check out my photo from FE2P PhotoBooth!')}`;
-                    window.location.href = smsLink;
-                });
-            } else {
-                // Fallback: Open SMS with text
-                const smsLink = `sms:?body=${encodeURIComponent('Check out my photo from FE2P PhotoBooth! View it here: ' + photoData.substring(0, 100) + '...')}`;
-                window.location.href = smsLink;
+                try {
+                    await navigator.share({
+                        files: [file],
+                        title: 'FE2P PhotoBooth Photo',
+                        text: 'Check out my photo from Flawless Events 2 Perfection!'
+                    });
+                    return;
+                } catch (err) {
+                    // User cancelled or share failed, try fallbacks
+                }
             }
+
+            // Windows/Desktop fallback: Try to copy image to clipboard
+            if (navigator.clipboard && typeof ClipboardItem !== 'undefined') {
+                try {
+                    // Convert to PNG for clipboard compatibility
+                    const pngBlob = await convertToPng(photoData);
+                    await navigator.clipboard.write([
+                        new ClipboardItem({ 'image/png': pngBlob })
+                    ]);
+                    showShareNotification('Photo copied to clipboard! Paste it in your messaging app.');
+                    return;
+                } catch (err) {
+                    console.log('Clipboard write failed:', err);
+                }
+            }
+
+            // Final fallback: Download the photo
+            downloadPhoto(photoData, 'fe2p-photo-' + Date.now() + '.jpg');
+            showShareNotification('Photo downloaded! Attach it to your message.');
         })
         .catch(() => {
-            // Final fallback
-            const smsLink = `sms:?body=${encodeURIComponent('Check out my photo from FE2P PhotoBooth!')}`;
-            window.location.href = smsLink;
+            // Error fallback: Just download
+            downloadPhoto(photoData, 'fe2p-photo-' + Date.now() + '.jpg');
+            showShareNotification('Photo downloaded! Attach it to your message.');
         });
+}
+
+// Convert image data URL to PNG blob for clipboard
+function convertToPng(dataUrl) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            canvas.toBlob(blob => {
+                if (blob) resolve(blob);
+                else reject(new Error('Failed to convert to PNG'));
+            }, 'image/png');
+        };
+        img.onerror = reject;
+        img.src = dataUrl;
+    });
+}
+
+// Show a temporary notification for share actions
+function showShareNotification(message) {
+    // Remove existing notification if any
+    const existing = document.getElementById('shareNotification');
+    if (existing) existing.remove();
+
+    const notification = document.createElement('div');
+    notification.id = 'shareNotification';
+    notification.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #333;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        font-size: 14px;
+        z-index: 10000;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        animation: slideUp 0.3s ease;
+    `;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    // Auto-remove after 4 seconds
+    setTimeout(() => {
+        notification.style.animation = 'fadeOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 4000);
 }
 
 // Email Photo utility
