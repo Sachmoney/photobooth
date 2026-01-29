@@ -231,11 +231,87 @@ function stopCamera() {
 
 // Take Single Photo
 function takePhoto() {
-    takePhotoWithCountdown().then(photo => {
+    takePhotoWithCountdown().then(async (photo) => {
         if (photo) {
-            savePhoto(photo);
+            // Apply corner logo if available
+            const photoWithLogo = await applyCornerLogo(photo);
+            savePhoto(photoWithLogo);
             loadQuickGallery();
         }
+    });
+}
+
+// Apply corner logo to a photo
+async function applyCornerLogo(photoData) {
+    return new Promise((resolve) => {
+        if (!designSettings || !designSettings.photo4x6 || !designSettings.photo4x6.cornerLogo) {
+            resolve(photoData);
+            return;
+        }
+
+        const settings = designSettings.photo4x6;
+        const img = new Image();
+
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            // Draw the photo
+            ctx.drawImage(img, 0, 0);
+
+            // Load and draw the logo
+            const logoImg = new Image();
+            logoImg.onload = () => {
+                const logoSize = (settings.size / 100) * Math.min(canvas.width, canvas.height);
+                const logoAspect = logoImg.width / logoImg.height;
+                let logoWidth, logoHeight;
+
+                if (logoAspect > 1) {
+                    logoWidth = logoSize;
+                    logoHeight = logoSize / logoAspect;
+                } else {
+                    logoHeight = logoSize;
+                    logoWidth = logoSize * logoAspect;
+                }
+
+                const padding = settings.padding || 20;
+                let logoX, logoY;
+
+                switch (settings.position) {
+                    case 'top-left':
+                        logoX = padding;
+                        logoY = padding;
+                        break;
+                    case 'top-right':
+                        logoX = canvas.width - logoWidth - padding;
+                        logoY = padding;
+                        break;
+                    case 'bottom-left':
+                        logoX = padding;
+                        logoY = canvas.height - logoHeight - padding;
+                        break;
+                    case 'bottom-right':
+                    default:
+                        logoX = canvas.width - logoWidth - padding;
+                        logoY = canvas.height - logoHeight - padding;
+                        break;
+                }
+
+                ctx.save();
+                ctx.globalAlpha = (settings.opacity || 100) / 100;
+                ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoHeight);
+                ctx.restore();
+
+                resolve(canvas.toDataURL('image/jpeg', 0.95));
+            };
+            logoImg.onerror = () => resolve(photoData);
+            logoImg.src = settings.cornerLogo;
+        };
+        img.onerror = () => resolve(photoData);
+        img.src = photoData;
     });
 }
 
