@@ -45,7 +45,6 @@ const fullscreenRecording = document.getElementById('fullscreenRecording');
 const fullscreenControls = document.getElementById('fullscreenControls');
 const fullscreenPhotoBtn = document.getElementById('fullscreenPhotoBtn');
 const fullscreenVideoBtn = document.getElementById('fullscreenVideoBtn');
-const fullscreen4x6Btn = document.getElementById('fullscreen4x6Btn');
 const fullscreenCollageBtn = document.getElementById('fullscreenCollageBtn');
 const exitFullscreenBtn = document.getElementById('exitFullscreenBtn');
 const fullscreenSessionName = document.getElementById('fullscreenSessionName');
