@@ -404,15 +404,21 @@ function applySettingsToUI() {
     if (borderRadiusValue) borderRadiusValue.textContent = designSettings.border.radius + 'px';
     if (borderOptions) borderOptions.style.display = designSettings.border.enabled ? 'block' : 'none';
 
+    // Collage settings
+    if (designSettings.collage) {
+        if (collageLogoCorner) collageLogoCorner.value = designSettings.collage.logoCorner || 'bottom-right';
+        if (collageGap) collageGap.value = designSettings.collage.gap || 10;
+        if (collageGapValue) collageGapValue.textContent = (designSettings.collage.gap || 10) + 'px';
+        if (collagePadding) collagePadding.value = designSettings.collage.padding || 20;
+        if (collagePaddingValue) collagePaddingValue.textContent = (designSettings.collage.padding || 20) + 'px';
+    }
+
     // 4x6 Photo settings
     if (designSettings.photo4x6) {
-        if (cornerLogoPosition) cornerLogoPosition.value = designSettings.photo4x6.position || 'bottom-right';
-        if (cornerLogoSize) cornerLogoSize.value = designSettings.photo4x6.size || 15;
-        if (cornerLogoSizeValue) cornerLogoSizeValue.textContent = (designSettings.photo4x6.size || 15) + '%';
+        if (cornerLogoSize) cornerLogoSize.value = designSettings.photo4x6.size || 80;
+        if (cornerLogoSizeValue) cornerLogoSizeValue.textContent = (designSettings.photo4x6.size || 80) + '%';
         if (cornerLogoOpacity) cornerLogoOpacity.value = designSettings.photo4x6.opacity || 100;
         if (cornerLogoOpacityValue) cornerLogoOpacityValue.textContent = (designSettings.photo4x6.opacity || 100) + '%';
-        if (cornerLogoPadding) cornerLogoPadding.value = designSettings.photo4x6.padding || 20;
-        if (cornerLogoPaddingValue) cornerLogoPaddingValue.textContent = (designSettings.photo4x6.padding || 20) + 'px';
 
         if (designSettings.photo4x6.cornerLogo && cornerLogoImg) {
             cornerLogoImg.src = designSettings.photo4x6.cornerLogo;
