@@ -592,6 +592,261 @@ function save4x6Photo(photoData) {
     uploadPhotoToGDrive(photoData, photoId, false);
 }
 
+// =============================================
+// 4x6 COLLAGE FUNCTIONS
+// =============================================
+
+// Take 4x6 Collage (3 photos + logo corner)
+async function take4x6Collage() {
+    if (stripProgress) stripProgress.style.display = 'block';
+    if (totalPhotosSpan) totalPhotosSpan.textContent = '3';
+
+    if (singlePhotoBtn) singlePhotoBtn.disabled = true;
+    if (photoStripBtn) photoStripBtn.disabled = true;
+    if (photo4x6Btn) photo4x6Btn.disabled = true;
+    if (collageBtn) collageBtn.disabled = true;
+
+    const collagePhotos = [];
+
+    for (let i = 1; i <= 3; i++) {
+        if (currentPhotoSpan) currentPhotoSpan.textContent = i;
+
+        if (i > 1) {
+            await sleep(2000);
+        }
+
+        const photo = await takePhotoWithCountdown();
+        if (photo) {
+            collagePhotos.push(photo);
+        }
+    }
+
+    if (collagePhotos.length === 3) {
+        const collage = await create4x6Collage(collagePhotos);
+        saveCollagePhoto(collage);
+    }
+
+    if (singlePhotoBtn) singlePhotoBtn.disabled = false;
+    if (photoStripBtn) photoStripBtn.disabled = false;
+    if (photo4x6Btn) photo4x6Btn.disabled = false;
+    if (collageBtn) collageBtn.disabled = false;
+    if (stripProgress) stripProgress.style.display = 'none';
+
+    loadQuickGallery();
+}
+
+// Create 4x6 Collage with 3 photos and logo corner
+async function create4x6Collage(photos) {
+    return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // 4x6 at 300 DPI = 1200x1800 pixels (portrait) or 1800x1200 (landscape)
+        // Using landscape for 2x2 grid
+        const canvasWidth = 1800;
+        const canvasHeight = 1200;
+
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+
+        // Get settings
+        const settings = designSettings || {};
+        const collageSettings = settings.collage || {
+            logoCorner: 'bottom-right',
+            gap: 10,
+            padding: 20
+        };
+        const photo4x6Settings = settings.photo4x6 || {};
+
+        const padding = collageSettings.padding || 20;
+        const gap = collageSettings.gap || 10;
+        const logoCorner = collageSettings.logoCorner || 'bottom-right';
+
+        // Draw background
+        if (settings.background && settings.background.type === 'gradient') {
+            let gradient;
+            const dir = settings.background.gradientDirection || 'to bottom';
+            switch (dir) {
+                case 'to right':
+                    gradient = ctx.createLinearGradient(0, 0, canvasWidth, 0);
+                    break;
+                case 'to bottom right':
+                    gradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
+                    break;
+                case 'to bottom left':
+                    gradient = ctx.createLinearGradient(canvasWidth, 0, 0, canvasHeight);
+                    break;
+                default:
+                    gradient = ctx.createLinearGradient(0, 0, 0, canvasHeight);
+            }
+            gradient.addColorStop(0, settings.background.gradientStart || '#ffffff');
+            gradient.addColorStop(1, settings.background.gradientEnd || '#f0f0f0');
+            ctx.fillStyle = gradient;
+        } else {
+            ctx.fillStyle = settings.background ? settings.background.color : '#ffffff';
+        }
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+        // Calculate cell dimensions
+        const cellWidth = (canvasWidth - padding * 2 - gap) / 2;
+        const cellHeight = (canvasHeight - padding * 2 - gap) / 2;
+
+        // Determine cell positions based on logo corner
+        const positions = [];
+        const logoPos = { x: 0, y: 0 };
+
+        switch (logoCorner) {
+            case 'top-left':
+                logoPos.x = padding;
+                logoPos.y = padding;
+                positions.push({ x: padding + cellWidth + gap, y: padding }); // top-right
+                positions.push({ x: padding, y: padding + cellHeight + gap }); // bottom-left
+                positions.push({ x: padding + cellWidth + gap, y: padding + cellHeight + gap }); // bottom-right
+                break;
+            case 'top-right':
+                logoPos.x = padding + cellWidth + gap;
+                logoPos.y = padding;
+                positions.push({ x: padding, y: padding }); // top-left
+                positions.push({ x: padding, y: padding + cellHeight + gap }); // bottom-left
+                positions.push({ x: padding + cellWidth + gap, y: padding + cellHeight + gap }); // bottom-right
+                break;
+            case 'bottom-left':
+                logoPos.x = padding;
+                logoPos.y = padding + cellHeight + gap;
+                positions.push({ x: padding, y: padding }); // top-left
+                positions.push({ x: padding + cellWidth + gap, y: padding }); // top-right
+                positions.push({ x: padding + cellWidth + gap, y: padding + cellHeight + gap }); // bottom-right
+                break;
+            case 'bottom-right':
+            default:
+                logoPos.x = padding + cellWidth + gap;
+                logoPos.y = padding + cellHeight + gap;
+                positions.push({ x: padding, y: padding }); // top-left
+                positions.push({ x: padding + cellWidth + gap, y: padding }); // top-right
+                positions.push({ x: padding, y: padding + cellHeight + gap }); // bottom-left
+                break;
+        }
+
+        // Load and draw photos
+        let loadedCount = 0;
+
+        photos.forEach((photoData, index) => {
+            const img = new Image();
+            img.onload = () => {
+                const pos = positions[index];
+
+                // Calculate crop to fill cell
+                const imgAspect = img.width / img.height;
+                const cellAspect = cellWidth / cellHeight;
+
+                let sx, sy, sw, sh;
+                if (imgAspect > cellAspect) {
+                    sh = img.height;
+                    sw = sh * cellAspect;
+                    sx = (img.width - sw) / 2;
+                    sy = 0;
+                } else {
+                    sw = img.width;
+                    sh = sw / cellAspect;
+                    sx = 0;
+                    sy = (img.height - sh) / 2;
+                }
+
+                ctx.drawImage(img, sx, sy, sw, sh, pos.x, pos.y, cellWidth, cellHeight);
+
+                loadedCount++;
+                if (loadedCount === photos.length) {
+                    drawLogo();
+                }
+            };
+            img.onerror = () => {
+                loadedCount++;
+                if (loadedCount === photos.length) {
+                    drawLogo();
+                }
+            };
+            img.src = photoData;
+        });
+
+        function drawLogo() {
+            // Draw logo in the corner cell
+            if (photo4x6Settings.cornerLogo) {
+                const logoImg = new Image();
+                logoImg.onload = () => {
+                    // Fill logo cell with background first
+                    ctx.fillStyle = settings.background ? settings.background.color : '#ffffff';
+                    ctx.fillRect(logoPos.x, logoPos.y, cellWidth, cellHeight);
+
+                    // Calculate logo size to fit in cell
+                    const logoScale = (photo4x6Settings.size || 80) / 100;
+                    const maxLogoWidth = cellWidth * logoScale;
+                    const maxLogoHeight = cellHeight * logoScale;
+
+                    const logoAspect = logoImg.width / logoImg.height;
+                    let logoWidth, logoHeight;
+
+                    if (logoAspect > 1) {
+                        logoWidth = Math.min(maxLogoWidth, logoImg.width);
+                        logoHeight = logoWidth / logoAspect;
+                        if (logoHeight > maxLogoHeight) {
+                            logoHeight = maxLogoHeight;
+                            logoWidth = logoHeight * logoAspect;
+                        }
+                    } else {
+                        logoHeight = Math.min(maxLogoHeight, logoImg.height);
+                        logoWidth = logoHeight * logoAspect;
+                        if (logoWidth > maxLogoWidth) {
+                            logoWidth = maxLogoWidth;
+                            logoHeight = logoWidth / logoAspect;
+                        }
+                    }
+
+                    // Center logo in cell
+                    const logoX = logoPos.x + (cellWidth - logoWidth) / 2;
+                    const logoY = logoPos.y + (cellHeight - logoHeight) / 2;
+
+                    ctx.save();
+                    ctx.globalAlpha = (photo4x6Settings.opacity || 100) / 100;
+                    ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoHeight);
+                    ctx.restore();
+
+                    resolve(canvas.toDataURL('image/jpeg', 0.95));
+                };
+                logoImg.onerror = () => {
+                    resolve(canvas.toDataURL('image/jpeg', 0.95));
+                };
+                logoImg.src = photo4x6Settings.cornerLogo;
+            } else {
+                // No logo - just leave the corner cell with background
+                resolve(canvas.toDataURL('image/jpeg', 0.95));
+            }
+        }
+    });
+}
+
+// Save Collage Photo
+function saveCollagePhoto(photoData) {
+    const photos = getPhotosFromStorage();
+    const photoId = Date.now();
+    const activeSessionId = getActiveSessionId();
+
+    const photoObj = {
+        id: photoId,
+        data: photoData,
+        isCollage: true,
+        sessionId: activeSessionId || null,
+        createdAt: new Date().toISOString()
+    };
+
+    photos.push(photoObj);
+    savePhotosToStorage(photos);
+
+    console.log('Collage saved:', photoId, 'Session:', activeSessionId);
+
+    // Auto-upload to Google Drive
+    uploadPhotoToGDrive(photoData, photoId, false);
+}
+
 // Upload photo to Google Drive
 async function uploadPhotoToGDrive(photoData, photoId, isStrip) {
     // Check if gdrive module is available
