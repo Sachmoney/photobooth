@@ -237,11 +237,18 @@ function getDefaultSettings() {
             radius: 0
         },
 
+        // Collage settings
+        collage: {
+            logoCorner: 'bottom-right',
+            gap: 10,
+            padding: 20
+        },
+
         // 4x6 Photo settings
         photo4x6: {
             cornerLogo: null,
             position: 'bottom-right',
-            size: 15,
+            size: 80,
             opacity: 100,
             padding: 20
         }
