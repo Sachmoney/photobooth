@@ -1504,6 +1504,42 @@ async function takeFullscreen4x6Photo() {
     if (fullscreenControls) fullscreenControls.classList.remove('hidden');
 }
 
+// Take 4x6 collage in fullscreen mode
+async function takeFullscreen4x6Collage() {
+    if (!stream || !isFullscreenMode) return;
+
+    // Update UI
+    if (fullscreenTotalPhotos) fullscreenTotalPhotos.textContent = '3';
+    if (fullscreenProgress) fullscreenProgress.classList.add('active');
+    if (fullscreenControls) fullscreenControls.classList.add('hidden');
+
+    const collagePhotos = [];
+
+    for (let i = 1; i <= 3; i++) {
+        if (fullscreenCurrentPhoto) fullscreenCurrentPhoto.textContent = i;
+
+        if (i > 1) {
+            await sleep(2000);
+        }
+
+        const photo = await takeFullscreenPhotoWithCountdown();
+        if (photo) {
+            collagePhotos.push(photo);
+        }
+    }
+
+    // Hide progress
+    if (fullscreenProgress) fullscreenProgress.classList.remove('active');
+
+    if (collagePhotos.length === 3) {
+        const collage = await create4x6Collage(collagePhotos);
+        saveCollagePhoto(collage);
+    }
+
+    // Show controls again
+    if (fullscreenControls) fullscreenControls.classList.remove('hidden');
+}
+
 // Take photo strip in fullscreen mode
 async function takeFullscreenPhotoStrip() {
     if (!stream || !isFullscreenMode) return;
