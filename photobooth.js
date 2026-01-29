@@ -20,7 +20,6 @@ const cameraSelection = document.getElementById('cameraSelection');
 const switchCameraBtn = document.getElementById('switchCameraBtn');
 const sessionSelect = document.getElementById('sessionSelect');
 const videoRecordBtn = document.getElementById('videoRecordBtn');
-const photo4x6Btn = document.getElementById('photo4x6Btn');
 const collageBtn = document.getElementById('collageBtn');
 
 // Quick Logo DOM Elements
