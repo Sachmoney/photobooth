@@ -456,7 +456,6 @@ async function take4x6Collage() {
 
     if (singlePhotoBtn) singlePhotoBtn.disabled = false;
     if (photoStripBtn) photoStripBtn.disabled = false;
-    if (photo4x6Btn) photo4x6Btn.disabled = false;
     if (collageBtn) collageBtn.disabled = false;
     if (stripProgress) stripProgress.style.display = 'none';
 
