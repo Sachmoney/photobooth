@@ -432,7 +432,6 @@ async function take4x6Collage() {
 
     if (singlePhotoBtn) singlePhotoBtn.disabled = true;
     if (photoStripBtn) photoStripBtn.disabled = true;
-    if (photo4x6Btn) photo4x6Btn.disabled = true;
     if (collageBtn) collageBtn.disabled = true;
 
     const collagePhotos = [];
