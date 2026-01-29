@@ -470,13 +470,20 @@ function collectSettingsFromUI() {
             radius: borderRadius ? parseInt(borderRadius.value) : 0
         },
 
+        // Collage settings
+        collage: {
+            logoCorner: collageLogoCorner ? collageLogoCorner.value : 'bottom-right',
+            gap: collageGap ? parseInt(collageGap.value) : 10,
+            padding: collagePadding ? parseInt(collagePadding.value) : 20
+        },
+
         // 4x6 Photo settings
         photo4x6: {
             cornerLogo: existingCornerLogo,
-            position: cornerLogoPosition ? cornerLogoPosition.value : 'bottom-right',
-            size: cornerLogoSize ? parseInt(cornerLogoSize.value) : 15,
+            position: 'bottom-right',
+            size: cornerLogoSize ? parseInt(cornerLogoSize.value) : 80,
             opacity: cornerLogoOpacity ? parseInt(cornerLogoOpacity.value) : 100,
-            padding: cornerLogoPadding ? parseInt(cornerLogoPadding.value) : 20
+            padding: 20
         }
     };
 }
