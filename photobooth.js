@@ -1391,3 +1391,166 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+// =============================================
+// QUICK LOGO FUNCTIONS
+// =============================================
+
+// Handle quick logo upload
+function handleQuickLogoUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+        alert('Please select an image file');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        setQuickLogo(e.target.result);
+    };
+    reader.readAsDataURL(file);
+}
+
+// Handle paste for logo
+function handleLogoPaste(event) {
+    // Only handle paste if not in an input field
+    if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+        return;
+    }
+
+    const items = event.clipboardData?.items;
+    if (!items) return;
+
+    for (let i = 0; i < items.length; i++) {
+        if (items[i].type.startsWith('image/')) {
+            const file = items[i].getAsFile();
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setQuickLogo(e.target.result);
+            };
+            reader.readAsDataURL(file);
+            event.preventDefault();
+            break;
+        }
+    }
+}
+
+// Set quick logo
+function setQuickLogo(logoData) {
+    // Update preview
+    if (quickLogoPreview) {
+        quickLogoPreview.src = logoData;
+        quickLogoPreview.style.display = 'block';
+    }
+    if (logoPlaceholder) {
+        logoPlaceholder.style.display = 'none';
+    }
+    if (removeQuickLogoBtn) {
+        removeQuickLogoBtn.style.display = 'inline-flex';
+    }
+
+    // Save to session settings
+    if (designSettings) {
+        if (!designSettings.photo4x6) {
+            designSettings.photo4x6 = {};
+        }
+        designSettings.photo4x6.cornerLogo = logoData;
+
+        // Save to current session
+        const activeSessionId = getActiveSessionId();
+        if (activeSessionId) {
+            updateSession(activeSessionId, { settings: designSettings });
+        }
+    }
+}
+
+// Remove quick logo
+function removeQuickLogo() {
+    if (quickLogoPreview) {
+        quickLogoPreview.src = '';
+        quickLogoPreview.style.display = 'none';
+    }
+    if (logoPlaceholder) {
+        logoPlaceholder.style.display = 'flex';
+    }
+    if (removeQuickLogoBtn) {
+        removeQuickLogoBtn.style.display = 'none';
+    }
+    if (quickLogoInput) {
+        quickLogoInput.value = '';
+    }
+
+    // Remove from session settings
+    if (designSettings && designSettings.photo4x6) {
+        designSettings.photo4x6.cornerLogo = null;
+
+        const activeSessionId = getActiveSessionId();
+        if (activeSessionId) {
+            updateSession(activeSessionId, { settings: designSettings });
+        }
+    }
+}
+
+// Update quick logo position
+function updateQuickLogoPosition() {
+    if (!quickLogoPosition || !designSettings) return;
+
+    if (!designSettings.photo4x6) {
+        designSettings.photo4x6 = {};
+    }
+    designSettings.photo4x6.position = quickLogoPosition.value;
+
+    const activeSessionId = getActiveSessionId();
+    if (activeSessionId) {
+        updateSession(activeSessionId, { settings: designSettings });
+    }
+}
+
+// Load quick logo from session
+function loadQuickLogo() {
+    if (!designSettings || !designSettings.photo4x6) return;
+
+    const logoData = designSettings.photo4x6.cornerLogo;
+    const position = designSettings.photo4x6.position || 'bottom-right';
+
+    if (quickLogoPosition) {
+        quickLogoPosition.value = position;
+    }
+
+    if (logoData) {
+        if (quickLogoPreview) {
+            quickLogoPreview.src = logoData;
+            quickLogoPreview.style.display = 'block';
+        }
+        if (logoPlaceholder) {
+            logoPlaceholder.style.display = 'none';
+        }
+        if (removeQuickLogoBtn) {
+            removeQuickLogoBtn.style.display = 'inline-flex';
+        }
+    } else {
+        if (quickLogoPreview) {
+            quickLogoPreview.style.display = 'none';
+        }
+        if (logoPlaceholder) {
+            logoPlaceholder.style.display = 'flex';
+        }
+        if (removeQuickLogoBtn) {
+            removeQuickLogoBtn.style.display = 'none';
+        }
+    }
+}
+
+// Load logo when session changes
+const originalHandleSessionChange = handleSessionChange;
+handleSessionChange = function() {
+    originalHandleSessionChange();
+    loadQuickLogo();
+};
+
+// Load logo on page load
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(loadQuickLogo, 100);
+});
+
