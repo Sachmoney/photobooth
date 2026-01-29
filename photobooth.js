@@ -68,7 +68,6 @@ if (startBtn) startBtn.addEventListener('click', startCamera);
 if (stopBtn) stopBtn.addEventListener('click', stopCamera);
 if (singlePhotoBtn) singlePhotoBtn.addEventListener('click', takePhoto);
 if (photoStripBtn) photoStripBtn.addEventListener('click', takePhotoStrip);
-if (photo4x6Btn) photo4x6Btn.addEventListener('click', take4x6Photo);
 if (collageBtn) collageBtn.addEventListener('click', take4x6Collage);
 if (videoRecordBtn) videoRecordBtn.addEventListener('click', toggleVideoRecording);
 
