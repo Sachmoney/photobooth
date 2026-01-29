@@ -330,7 +330,8 @@ function loadActiveSession() {
         background: { type: 'solid', color: '#ffffff', gradientStart: '#ffffff', gradientEnd: '#f0f0f0', gradientDirection: 'to bottom' },
         text: { enabled: false, content: '', position: 'bottom', fontSize: 24, fontFamily: 'Arial', color: '#000000', showDate: false },
         border: { enabled: false, width: 2, color: '#000000', style: 'solid', radius: 0 },
-        photo4x6: { cornerLogo: null, position: 'bottom-right', size: 15, opacity: 100, padding: 20 }
+        collage: { logoCorner: 'bottom-right', gap: 10, padding: 20 },
+        photo4x6: { cornerLogo: null, position: 'bottom-right', size: 80, opacity: 100, padding: 20 }
     };
 
     designSettings = activeSession.settings ? { ...defaultSettings, ...activeSession.settings } : defaultSettings;
@@ -340,6 +341,7 @@ function loadActiveSession() {
     designSettings.background = { ...defaultSettings.background, ...(designSettings.background || {}) };
     designSettings.text = { ...defaultSettings.text, ...(designSettings.text || {}) };
     designSettings.border = { ...defaultSettings.border, ...(designSettings.border || {}) };
+    designSettings.collage = { ...defaultSettings.collage, ...(designSettings.collage || {}) };
     designSettings.photo4x6 = { ...defaultSettings.photo4x6, ...(designSettings.photo4x6 || {}) };
 
     // Apply settings to UI
