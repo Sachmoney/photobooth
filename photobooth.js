@@ -419,6 +419,44 @@ function savePhoto(photoData) {
 
     // Auto-upload to Google Drive
     uploadPhotoToGDrive(photoData, photoId, false);
+
+    // Auto-upload to Firebase Cloud Storage if authenticated
+    uploadPhotoToFirebase(photoObj);
+}
+
+// Upload photo to Firebase Cloud Storage
+async function uploadPhotoToFirebase(photo) {
+    // Check if Firebase sync is available and user is authenticated
+    if (typeof syncPhotoToStorage !== 'function') {
+        return;
+    }
+
+    if (typeof isAuthenticated !== 'function' || !isAuthenticated()) {
+        // Queue for later sync
+        if (typeof queuePhotoForSync === 'function') {
+            queuePhotoForSync(photo);
+        }
+        return;
+    }
+
+    try {
+        const result = await syncPhotoToStorage(photo);
+        if (result.success) {
+            console.log('Photo uploaded to Firebase:', photo.id);
+            // Mark as uploaded
+            const photos = getPhotosFromStorage();
+            const idx = photos.findIndex(p => p.id === photo.id);
+            if (idx !== -1) {
+                photos[idx].uploadedToCloud = true;
+                photos[idx].cloudUrl = result.url;
+                savePhotosToStorage(photos, true); // Skip cloud sync to avoid loop
+            }
+        } else if (result.queued) {
+            console.log('Photo queued for Firebase upload:', photo.id);
+        }
+    } catch (error) {
+        console.error('Firebase upload error:', error);
+    }
 }
 
 // =============================================
