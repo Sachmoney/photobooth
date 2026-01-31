@@ -39,6 +39,42 @@ header {
     padding: 30px 0;
 }
 
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-spacer {
+    flex: 1;
+}
+
+.header-title {
+    flex: 2;
+    text-align: center;
+}
+
+.header-auth {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-center {
+    flex: 1;
+    text-align: center;
+}
+
 header h1 {
     font-size: 3rem;
     margin-bottom: 10px;
@@ -52,6 +88,112 @@ header h1 {
 header p {
     font-size: 1.2rem;
     color: var(--text-secondary);
+}
+
+/* Auth Header Buttons */
+.auth-btn-small {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.auth-btn-login {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+}
+
+.auth-btn-login:hover {
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.auth-btn-signup {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: #000;
+}
+
+.auth-btn-signup:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-email-display {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.auth-btn-logout {
+    padding: 6px 12px;
+    background: transparent;
+    color: var(--danger-color);
+    border: 1px solid var(--danger-color);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.auth-btn-logout:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* Login Required Overlay */
+.login-required-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.login-required-content {
+    text-align: center;
+    padding: 40px;
+    max-width: 400px;
+}
+
+.login-required-content h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.login-required-content p {
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+}
+
+.login-required-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.login-required-buttons .btn {
+    min-width: 120px;
 }
 
 main {
