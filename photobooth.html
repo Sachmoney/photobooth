@@ -215,10 +215,29 @@
         </footer>
     </div>
 
+    <!-- QR Code Modal -->
+    <div class="qr-modal" id="qrModal">
+        <div class="qr-modal-content">
+            <button class="qr-close-btn" id="qrCloseBtn">&times;</button>
+            <h2>Scan to Get Your Photo!</h2>
+            <div class="qr-code-container">
+                <img id="qrCodeImage" alt="QR Code">
+            </div>
+            <p class="qr-instruction">Point your phone's camera at this code</p>
+            <div class="qr-photo-preview">
+                <img id="qrPhotoPreview" alt="Your Photo">
+            </div>
+            <div class="qr-actions">
+                <button id="qrDoneBtn" class="btn btn-primary">Done</button>
+            </div>
+        </div>
+    </div>
+
     <!-- App Scripts -->
     <script src="app.js"></script>
     <script src="api-client.js"></script>
     <script src="auth-ui.js"></script>
+    <script src="qrcode.min.js"></script>
     <script src="photobooth.js"></script>
 </body>
 </html>
