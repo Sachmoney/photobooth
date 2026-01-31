@@ -53,6 +53,11 @@ function saveFirebaseConfig(config) {
 
 // Check if Firebase is configured
 function isFirebaseConfigured() {
+    // Check hardcoded config first
+    if (firebaseConfig.apiKey && firebaseConfig.projectId) {
+        return true;
+    }
+    // Fall back to localStorage config
     const config = getFirebaseConfig();
     return config && config.apiKey && config.projectId;
 }
