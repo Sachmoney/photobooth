@@ -409,8 +409,8 @@ function createStripGalleryItem(photo, container = gallery) {
     actions.appendChild(printBtn);
     actions.appendChild(deleteBtn);
     stripDiv.appendChild(actions);
-    
-    gallery.insertBefore(stripDiv, gallery.firstChild);
+
+    container.appendChild(stripDiv);
 }
 
 // Delete Photo
