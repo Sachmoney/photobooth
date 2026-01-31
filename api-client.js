@@ -469,12 +469,51 @@ function getSyncStatus() {
 // INITIALIZATION
 // =============================================
 
+// Sync data from cloud after authentication
+async function syncFromCloudOnLogin() {
+    console.log('Syncing data from cloud after login...');
+
+    // Sync active session from cloud
+    const activeResult = await getActiveSessionFromCloud();
+    if (activeResult.success && activeResult.activeSessionId) {
+        console.log('Setting active session from cloud:', activeResult.activeSessionId);
+        localStorage.setItem('photobooth-active-session', activeResult.activeSessionId);
+        window.dispatchEvent(new CustomEvent('activeSessionChanged', {
+            detail: { sessionId: activeResult.activeSessionId }
+        }));
+    }
+
+    // Sync sessions from cloud
+    const sessionsResult = await syncSessionsFromCloud();
+    if (sessionsResult.success && sessionsResult.sessions) {
+        console.log('Loaded sessions from cloud:', sessionsResult.sessions.length);
+        // Merge with local sessions
+        const localSessions = JSON.parse(localStorage.getItem('photobooth-sessions') || '[]');
+        const cloudIds = new Set(sessionsResult.sessions.map(s => s.id));
+        const localOnly = localSessions.filter(s => !cloudIds.has(s.id));
+        const merged = [...sessionsResult.sessions, ...localOnly];
+        localStorage.setItem('photobooth-sessions', JSON.stringify(merged));
+        window.dispatchEvent(new CustomEvent('sessionsLoaded', { detail: { sessions: merged } }));
+    }
+}
+
 // Verify auth on load
 document.addEventListener('DOMContentLoaded', async () => {
     const user = await verifyAuth();
     if (user) {
         window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { user } }));
+        // Sync data from cloud
+        syncFromCloudOnLogin();
     }
+});
+
+// Listen for successful login to sync data
+window.addEventListener('userSignedIn', () => {
+    syncFromCloudOnLogin();
+});
+
+window.addEventListener('userSignedUp', () => {
+    syncFromCloudOnLogin();
 });
 
 // Process queue when online
