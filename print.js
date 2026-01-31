@@ -208,7 +208,7 @@ function printSessionPhotos(photos) {
 }
 
 // Create Cloud Photo Gallery Item (for photos only in cloud)
-function createCloudPhotoGalleryItem(photo) {
+function createCloudPhotoGalleryItem(photo, container = gallery) {
     const photoDiv = document.createElement('div');
     photoDiv.className = 'photo-item cloud-photo';
     photoDiv.dataset.photoId = photo.id;
