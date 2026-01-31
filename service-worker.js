@@ -1,4 +1,4 @@
-const CACHE_NAME = 'photobooth-v5';
+const CACHE_NAME = 'photobooth-v6';
 const urlsToCache = [
   '/',
   '/index.html',
