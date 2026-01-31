@@ -349,11 +349,11 @@ function createPhotoGalleryItem(photo, container = gallery) {
     
     photoDiv.appendChild(img);
     photoDiv.appendChild(actions);
-    gallery.appendChild(photoDiv);
+    container.appendChild(photoDiv);
 }
 
 // Create Strip Gallery Item
-function createStripGalleryItem(photo) {
+function createStripGalleryItem(photo, container = gallery) {
     const stripDiv = document.createElement('div');
     stripDiv.className = 'photo-item photo-strip';
     stripDiv.dataset.photoId = photo.id;
