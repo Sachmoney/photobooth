@@ -397,7 +397,7 @@ function textPhoto(photoData) {
     fetch(photoData)
         .then(res => res.blob())
         .then(async blob => {
-            const file = new File([blob], 'fe2p-photo.jpg', { type: 'image/jpeg' });
+            const file = new File([blob], 'boothx-photo.jpg', { type: 'image/jpeg' });
 
             // Try to use share API first (works on mobile and some browsers)
             if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -429,12 +429,12 @@ function textPhoto(photoData) {
             }
 
             // Final fallback: Download the photo
-            downloadPhoto(photoData, 'fe2p-photo-' + Date.now() + '.jpg');
+            downloadPhoto(photoData, 'boothx-photo-' + Date.now() + '.jpg');
             showShareNotification('Photo downloaded! Attach it to your message.');
         })
         .catch(() => {
             // Error fallback: Just download
-            downloadPhoto(photoData, 'fe2p-photo-' + Date.now() + '.jpg');
+            downloadPhoto(photoData, 'boothx-photo-' + Date.now() + '.jpg');
             showShareNotification('Photo downloaded! Attach it to your message.');
         });
 }
