@@ -611,26 +611,27 @@ main {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--gold), var(--gold-light));
-    color: #000;
+    background: #ffffff;
+    color: #000000;
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, var(--gold-light), #ffe066);
+    background: #e0e0e0;
 }
 
 .btn-secondary {
-    background: linear-gradient(135deg, #333333, #4a4a4a);
-    border: 1px solid var(--gold);
+    background: transparent;
+    border: 1px solid #ffffff;
+    color: #ffffff;
 }
 
 .btn-secondary:hover {
-    background: linear-gradient(135deg, #4a4a4a, #5a5a5a);
-    border-color: var(--gold-light);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .btn-danger {
-    background: linear-gradient(135deg, var(--danger-color), #f97316);
+    background: #333333;
+    color: #ffffff;
 }
 
 .btn-danger:hover {
