@@ -284,11 +284,31 @@ function handleSaveSession() {
 
     updateSession(currentSessionId, {
         design: designData,
-        settings: designSettings
+        settings: designSettings,
+        updatedAt: new Date().toISOString()
     });
 
     alert('Session saved!');
     loadSessions();
+
+    // Trigger cloud sync if authenticated
+    triggerSessionCloudSync();
+}
+
+// Trigger cloud sync for sessions
+function triggerSessionCloudSync() {
+    if (typeof isAuthenticated !== 'function' || !isAuthenticated()) {
+        return;
+    }
+
+    if (typeof syncSessionsToCloud === 'function') {
+        const sessions = getSessions();
+        syncSessionsToCloud(sessions).then(result => {
+            if (result.success) {
+                console.log('Sessions synced to cloud after save');
+            }
+        });
+    }
 }
 
 // Load Active Session
