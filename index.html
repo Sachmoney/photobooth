@@ -82,6 +82,66 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Firebase Cloud Sync Settings -->
+                <div class="firebase-config-section" id="firebaseConfigSection">
+                    <h2>Cloud Sync</h2>
+                    <p class="section-description">Sign in to sync your photos and sessions across devices.</p>
+
+                    <div class="firebase-config-form">
+                        <div class="setting-group">
+                            <label for="firebaseApiKey">API Key:</label>
+                            <input type="text" id="firebaseApiKey" class="setting-input" placeholder="Your Firebase API Key">
+                        </div>
+                        <div class="setting-group">
+                            <label for="firebaseAuthDomain">Auth Domain:</label>
+                            <input type="text" id="firebaseAuthDomain" class="setting-input" placeholder="your-app.firebaseapp.com">
+                        </div>
+                        <div class="setting-group">
+                            <label for="firebaseProjectId">Project ID:</label>
+                            <input type="text" id="firebaseProjectId" class="setting-input" placeholder="your-project-id">
+                        </div>
+                        <div class="setting-group">
+                            <label for="firebaseStorageBucket">Storage Bucket:</label>
+                            <input type="text" id="firebaseStorageBucket" class="setting-input" placeholder="your-app.appspot.com">
+                        </div>
+                        <div class="setting-group">
+                            <label for="firebaseMessagingSenderId">Messaging Sender ID:</label>
+                            <input type="text" id="firebaseMessagingSenderId" class="setting-input" placeholder="123456789">
+                        </div>
+                        <div class="setting-group">
+                            <label for="firebaseAppId">App ID:</label>
+                            <input type="text" id="firebaseAppId" class="setting-input" placeholder="1:123456789:web:abcdef">
+                        </div>
+
+                        <div class="firebase-config-actions">
+                            <button class="btn btn-primary" onclick="saveFirebaseConfigFromUI()">
+                                <span class="btn-icon">💾</span>
+                                Save Configuration
+                            </button>
+                            <button class="btn btn-danger" onclick="clearFirebaseConfigUI()">
+                                <span class="btn-icon">🗑️</span>
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="firebase-help">
+                        <details>
+                            <summary>How to get Firebase configuration</summary>
+                            <ol>
+                                <li>Go to <a href="https://console.firebase.google.com/" target="_blank">Firebase Console</a></li>
+                                <li>Create a new project (or select existing)</li>
+                                <li>Go to Project Settings (gear icon)</li>
+                                <li>Scroll down to "Your apps" and click "Add app" (Web)</li>
+                                <li>Copy the config values from the code snippet</li>
+                                <li>Enable Authentication (Email/Password) in Build > Authentication</li>
+                                <li>Create a Firestore database in Build > Firestore Database</li>
+                                <li>Create a Storage bucket in Build > Storage</li>
+                            </ol>
+                        </details>
+                    </div>
+                </div>
             </div>
         </main>
 
