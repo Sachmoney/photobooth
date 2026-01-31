@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Download your photo from FE2P PhotoBooth">
+    <meta name="theme-color" content="#d4af37">
+    <title>Your Photo - FE2P PhotoBooth</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📸</text></svg>">
+    <style>
+        .photo-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+        .photo-container {
+            max-width: 100%;
+            margin: 20px 0;
+        }
+        .photo-container img {
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #d4af37, #f4cf47);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .download-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);
+        }
+        .loading {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+        }
+        .error {
+            color: #ef4444;
+            font-size: 1.2rem;
+        }
+        .branding {
+            margin-top: 30px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="photo-page">
+        <h1>📸 FE2P PhotoBooth</h1>
+
+        <div id="content">
+            <p class="loading">Loading your photo...</p>
+        </div>
+
+        <div class="branding">
+            <p>Flawless Events 2 Perfection</p>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const photoId = urlParams.get('id');
+        const content = document.getElementById('content');
+
+        if (!photoId) {
+            content.innerHTML = '<p class="error">No photo ID provided</p>';
+        } else {
+            const photoUrl = `/api/photo?id=${photoId}`;
+
+            // Create image to test if it loads
+            const img = new Image();
+            img.onload = () => {
+                content.innerHTML = `
+                    <div class="photo-container">
+                        <img src="${photoUrl}" alt="Your Photo">
+                    </div>
+                    <a href="${photoUrl}" download="photo-${photoId}.jpg" class="download-btn">
+                        📥 Save Photo
+                    </a>
+                `;
+            };
+            img.onerror = () => {
+                content.innerHTML = '<p class="error">Photo not found or has expired</p>';
+            };
+            img.src = photoUrl;
+        }
+    </script>
+</body>
+</html>
