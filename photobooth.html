@@ -185,6 +185,40 @@
                 <div class="fullscreen-session-info" id="fullscreenSessionInfo">
                     <span id="fullscreenSessionName">Session Name</span>
                 </div>
+
+                <!-- Fullscreen Photo Review Screen -->
+                <div class="fullscreen-review" id="fullscreenReview">
+                    <div class="review-content">
+                        <div class="review-photo-section">
+                            <img id="reviewPhoto" alt="Your Photo">
+                        </div>
+                        <div class="review-share-section">
+                            <h2>Scan to Get Your Photo!</h2>
+                            <div class="review-qr-container">
+                                <img id="reviewQRCode" alt="QR Code">
+                            </div>
+                            <p class="review-instruction">Point your phone camera at the QR code</p>
+                            <div class="review-share-buttons">
+                                <button id="reviewDownloadBtn" class="review-btn download-btn">
+                                    <span>📥</span>
+                                    <span>Download</span>
+                                </button>
+                                <button id="reviewShareBtn" class="review-btn share-btn">
+                                    <span>📤</span>
+                                    <span>Share</span>
+                                </button>
+                                <button id="reviewEmailBtn" class="review-btn email-btn">
+                                    <span>📧</span>
+                                    <span>Email</span>
+                                </button>
+                            </div>
+                            <button id="reviewDoneBtn" class="review-done-btn">
+                                <span>📸</span>
+                                Take Another Photo
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Photo Strip Progress -->
