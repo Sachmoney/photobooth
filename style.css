@@ -1134,6 +1134,30 @@ footer {
     color: var(--text-primary);
 }
 
+.session-header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.session-header-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+#goToBoothBtn {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: #000;
+    font-weight: 600;
+}
+
+#goToBoothBtn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+}
+
 /* Session Selector */
 .session-selector-section {
     background: var(--bg-card);
