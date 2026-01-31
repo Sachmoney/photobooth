@@ -206,6 +206,19 @@
 
             // Initial UI update
             updateDriveStatusUI();
+
+            // Load Firebase config values
+            const firebaseConf = typeof getFirebaseConfig === 'function' ? getFirebaseConfig() : null;
+            if (firebaseConf) {
+                if (document.getElementById('firebaseApiKey')) {
+                    document.getElementById('firebaseApiKey').value = firebaseConf.apiKey || '';
+                    document.getElementById('firebaseAuthDomain').value = firebaseConf.authDomain || '';
+                    document.getElementById('firebaseProjectId').value = firebaseConf.projectId || '';
+                    document.getElementById('firebaseStorageBucket').value = firebaseConf.storageBucket || '';
+                    document.getElementById('firebaseMessagingSenderId').value = firebaseConf.messagingSenderId || '';
+                    document.getElementById('firebaseAppId').value = firebaseConf.appId || '';
+                }
+            }
         });
     </script>
 </body>
