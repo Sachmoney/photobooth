@@ -1212,28 +1212,6 @@ window.addEventListener('beforeunload', () => {
     }
 });
 
-// Google Drive UI handlers for photobooth page
-document.addEventListener('DOMContentLoaded', () => {
-    const connectBtn = document.getElementById('driveConnectBtn');
-    const disconnectBtn = document.getElementById('driveDisconnectBtn');
-
-    if (connectBtn) {
-        connectBtn.addEventListener('click', () => {
-            if (typeof signInGDrive === 'function') {
-                signInGDrive();
-            }
-        });
-    }
-
-    if (disconnectBtn) {
-        disconnectBtn.addEventListener('click', () => {
-            if (typeof signOutGDrive === 'function') {
-                signOutGDrive();
-            }
-        });
-    }
-});
-
 // =============================================
 // FULLSCREEN BOOTH MODE
 // =============================================
