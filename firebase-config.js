@@ -64,8 +64,17 @@ function isFirebaseConfigured() {
 
 // Initialize Firebase
 async function initializeFirebase(config = null) {
-    // Use provided config or get from storage
-    const firebaseConf = config || getFirebaseConfig();
+    // Use provided config, or hardcoded config, or get from storage
+    let firebaseConf = config;
+
+    if (!firebaseConf) {
+        // Check if hardcoded config has values
+        if (firebaseConfig.apiKey && firebaseConfig.projectId) {
+            firebaseConf = firebaseConfig;
+        } else {
+            firebaseConf = getFirebaseConfig();
+        }
+    }
 
     if (!firebaseConf || !firebaseConf.apiKey || !firebaseConf.projectId) {
         console.log('Firebase not configured');
