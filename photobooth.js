@@ -424,6 +424,21 @@ function savePhoto(photoData) {
     uploadPhotoToFirebase(photoObj);
 }
 
+// Auto-download photo to computer
+function autoDownloadPhoto(photoData, filename) {
+    try {
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = photoData;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        console.log('Photo downloaded:', filename);
+    } catch (error) {
+        console.error('Auto-download failed:', error);
+    }
+}
+
 // Upload photo to Firebase Cloud Storage
 async function uploadPhotoToFirebase(photo) {
     // Check if Firebase sync is available and user is authenticated
