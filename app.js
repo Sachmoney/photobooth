@@ -217,6 +217,17 @@ function setActiveSessionId(sessionId) {
         } else {
             localStorage.removeItem(StorageKeys.ACTIVE_SESSION);
         }
+
+        // Sync to cloud if authenticated
+        if (typeof isAuthenticated === 'function' && isAuthenticated()) {
+            if (typeof setActiveSessionInCloud === 'function') {
+                setActiveSessionInCloud(sessionId).then(result => {
+                    console.log('Active session synced to cloud:', result);
+                }).catch(err => {
+                    console.error('Failed to sync active session to cloud:', err);
+                });
+            }
+        }
     } catch (error) {
         console.error('Error saving active session:', error);
     }
