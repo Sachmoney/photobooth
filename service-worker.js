@@ -1,4 +1,4 @@
-const CACHE_NAME = 'photobooth-v7';
+const CACHE_NAME = 'photobooth-v8';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -13,9 +13,8 @@ const urlsToCache = [
   '/print.js',
   '/api-client.js',
   '/auth-ui.js',
-  '/qrcode.min.js',
   '/manifest.json'
-  // Note: icon files are optional, service worker will work without them
+  // Note: QR code library is loaded from CDN
 ];
 
 // URLs to never cache (API calls)
