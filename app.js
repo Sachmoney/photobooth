@@ -33,7 +33,9 @@ const StorageKeys = {
     DESIGN: 'photobooth-design',
     DESIGN_SETTINGS: 'photobooth-design-settings',
     SESSIONS: 'photobooth-sessions',
-    ACTIVE_SESSION: 'photobooth-active-session'
+    ACTIVE_SESSION: 'photobooth-active-session',
+    SYNC_QUEUE: 'photobooth-sync-queue',
+    LAST_SYNC: 'photobooth-last-sync'
 };
 
 // Get Photos from Storage
