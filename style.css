@@ -1155,14 +1155,14 @@ footer {
 }
 
 #goToBoothBtn {
-    background: linear-gradient(135deg, var(--gold), var(--gold-light));
-    color: #000;
+    background: #ffffff;
+    color: #000000;
     font-weight: 600;
+    border-radius: 0;
 }
 
 #goToBoothBtn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.4);
+    background: #e0e0e0;
 }
 
 /* Session Selector */
