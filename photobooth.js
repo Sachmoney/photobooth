@@ -1781,40 +1781,63 @@ const qrPhotoPreview = document.getElementById('qrPhotoPreview');
 const qrCloseBtn = document.getElementById('qrCloseBtn');
 const qrDoneBtn = document.getElementById('qrDoneBtn');
 
+// Generate QR Code as Data URL
+function generateQRCodeDataUrl(text, size = 200) {
+    try {
+        // Using qrcode-generator library
+        const typeNumber = 0; // Auto-detect
+        const errorCorrectionLevel = 'M';
+        const qr = qrcode(typeNumber, errorCorrectionLevel);
+        qr.addData(text);
+        qr.make();
+
+        // Create canvas and draw QR code
+        const moduleCount = qr.getModuleCount();
+        const cellSize = Math.floor(size / moduleCount);
+        const actualSize = cellSize * moduleCount;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = actualSize;
+        canvas.height = actualSize;
+        const ctx = canvas.getContext('2d');
+
+        // White background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, actualSize, actualSize);
+
+        // Draw QR modules
+        ctx.fillStyle = '#000000';
+        for (let row = 0; row < moduleCount; row++) {
+            for (let col = 0; col < moduleCount; col++) {
+                if (qr.isDark(row, col)) {
+                    ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+                }
+            }
+        }
+
+        return canvas.toDataURL('image/png');
+    } catch (error) {
+        console.error('QR code generation error:', error);
+        return null;
+    }
+}
+
 // Show QR Code Modal
 function showQRCode(photoId, photoData, isCloudUploaded = false) {
-    if (!qrModal || typeof QRCode !== 'function') {
+    if (!qrModal || typeof qrcode !== 'function') {
         console.log('QR code not available');
         return;
     }
 
     // Generate the photo URL
     const baseUrl = window.location.origin;
-    let photoUrl;
-
-    if (isCloudUploaded) {
-        // Use cloud URL for sharing
-        photoUrl = `${baseUrl}/photo.html?id=${photoId}`;
-    } else {
-        // For non-cloud photos, we can't share via QR
-        // But we can still show the photo with a message
-        photoUrl = `${baseUrl}/photo.html?id=${photoId}`;
-    }
+    const photoUrl = `${baseUrl}/photo.html?id=${photoId}`;
 
     // Generate QR code
-    try {
-        const qrDataUrl = QRCode(photoUrl, {
-            size: 200,
-            margin: 2,
-            errorCorrectionLevel: 'M'
-        });
+    const qrDataUrl = generateQRCodeDataUrl(photoUrl, 200);
 
-        if (qrCodeImage) {
-            qrCodeImage.src = qrDataUrl;
-        }
-    } catch (error) {
-        console.error('QR code generation error:', error);
-        return;
+    if (qrDataUrl && qrCodeImage) {
+        qrCodeImage.src = qrDataUrl;
     }
 
     // Show photo preview
