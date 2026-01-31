@@ -710,6 +710,9 @@ function saveCollagePhoto(photoData) {
 
     // Auto-upload to Google Drive
     uploadPhotoToGDrive(photoData, photoId, false);
+
+    // Auto-upload to Firebase Cloud Storage if authenticated
+    uploadPhotoToFirebase(photoObj);
 }
 
 // Upload photo to Google Drive
