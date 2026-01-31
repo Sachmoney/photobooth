@@ -48,8 +48,21 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
+// Check if URL should not be cached
+function shouldNotCache(url) {
+  return noCachePatterns.some(pattern => url.includes(pattern));
+}
+
 // Fetch Event
 self.addEventListener('fetch', (event) => {
+  const requestUrl = event.request.url;
+
+  // Never cache Firebase and API requests
+  if (shouldNotCache(requestUrl)) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
@@ -61,6 +74,11 @@ self.addEventListener('fetch', (event) => {
           (response) => {
             // Check if valid response
             if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+
+            // Don't cache if URL matches no-cache patterns
+            if (shouldNotCache(requestUrl)) {
               return response;
             }
 
