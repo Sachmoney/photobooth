@@ -230,6 +230,50 @@ async function syncSessionsFromCloud() {
 // PHOTOS SYNC
 // =============================================
 
+// Compress image to reduce size
+async function compressImage(dataUrl, maxSizeKB = 500) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+
+            // Scale down if too large
+            const maxDim = 1200;
+            if (width > maxDim || height > maxDim) {
+                if (width > height) {
+                    height = (height / width) * maxDim;
+                    width = maxDim;
+                } else {
+                    width = (width / height) * maxDim;
+                    height = maxDim;
+                }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // Try different quality levels
+            let quality = 0.8;
+            let result = canvas.toDataURL('image/jpeg', quality);
+
+            while (result.length > maxSizeKB * 1024 && quality > 0.3) {
+                quality -= 0.1;
+                result = canvas.toDataURL('image/jpeg', quality);
+            }
+
+            console.log('Compressed image size:', Math.round(result.length / 1024), 'KB');
+            resolve(result);
+        };
+        img.onerror = () => resolve(dataUrl);
+        img.src = dataUrl;
+    });
+}
+
 // Upload photo to cloud
 async function syncPhotoToStorage(photo) {
     const token = getAuthToken();
@@ -239,6 +283,12 @@ async function syncPhotoToStorage(photo) {
     }
 
     try {
+        // Compress image before upload
+        console.log('Original photo size:', Math.round(photo.data.length / 1024), 'KB');
+        const compressedData = await compressImage(photo.data, 800);
+
+        console.log('Uploading to:', `${API_BASE}/upload`);
+
         const response = await fetch(`${API_BASE}/upload`, {
             method: 'POST',
             headers: {
@@ -246,7 +296,7 @@ async function syncPhotoToStorage(photo) {
                 'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
-                photoData: photo.data,
+                photoData: compressedData,
                 photoId: photo.id?.toString(),
                 sessionId: photo.sessionId,
                 isStrip: photo.isStrip,
@@ -254,7 +304,16 @@ async function syncPhotoToStorage(photo) {
             })
         });
 
+        console.log('Upload response status:', response.status);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Upload failed:', response.status, errorText);
+            return { success: false, error: `HTTP ${response.status}: ${errorText}` };
+        }
+
         const data = await response.json();
+        console.log('Upload response data:', data);
 
         if (data.success) {
             return { success: true, url: data.photoUrl, photoId: data.photoId };
