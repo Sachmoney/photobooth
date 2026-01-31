@@ -2082,3 +2082,139 @@ footer {
     z-index: 2;
 }
 
+/* =============================================
+   QR CODE MODAL
+   ============================================= */
+
+.qr-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.qr-modal.active {
+    display: flex;
+}
+
+.qr-modal-content {
+    background: var(--bg-card);
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 60px rgba(212, 175, 55, 0.3);
+    animation: qrModalIn 0.3s ease;
+}
+
+@keyframes qrModalIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.qr-modal-content h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.qr-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.qr-close-btn:hover {
+    color: var(--text-primary);
+}
+
+.qr-code-container {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    display: inline-block;
+    margin: 20px 0;
+}
+
+.qr-code-container img {
+    width: 200px;
+    height: 200px;
+    display: block;
+}
+
+.qr-instruction {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+.qr-photo-preview {
+    margin: 20px 0;
+}
+
+.qr-photo-preview img {
+    max-width: 150px;
+    max-height: 150px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.qr-actions {
+    margin-top: 20px;
+}
+
+.qr-actions .btn {
+    min-width: 150px;
+}
+
+/* QR Modal in Fullscreen Mode */
+.fullscreen-booth .qr-modal {
+    z-index: 100001;
+}
+
+/* Responsive QR Modal */
+@media (max-width: 480px) {
+    .qr-modal-content {
+        padding: 30px 20px;
+    }
+
+    .qr-modal-content h2 {
+        font-size: 1.4rem;
+    }
+
+    .qr-code-container img {
+        width: 180px;
+        height: 180px;
+    }
+
+    .qr-photo-preview img {
+        max-width: 120px;
+        max-height: 120px;
+    }
+}
+
