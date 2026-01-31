@@ -678,16 +678,18 @@ main {
 }
 
 .gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
     margin-bottom: 20px;
 }
 
 .empty-gallery {
-    grid-column: 1 / -1;
     text-align: center;
     padding: 40px;
+    background: var(--card-bg);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
     color: var(--text-secondary);
     font-style: italic;
 }
