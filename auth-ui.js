@@ -726,7 +726,6 @@ function initAuthUI() {
 
     // Listen for auth state changes
     window.addEventListener('authStateChanged', (event) => {
-        updateUserStatusUI(event.detail.user);
         createHeaderAuthButtons();
 
         if (event.detail.user) {
@@ -735,20 +734,6 @@ function initAuthUI() {
             showLoginRequiredOverlay();
         }
     });
-
-    // Listen for sync status changes
-    window.addEventListener('syncStatusChanged', (event) => {
-        updateSyncStatusUI(event.detail.status);
-    });
-
-    // Check initial auth state
-    const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
-    updateUserStatusUI(user);
-
-    // Check initial sync status
-    if (user && typeof getSyncStatus === 'function') {
-        updateSyncStatusUI(getSyncStatus());
-    }
 }
 
 // Auto-initialize when DOM is ready
