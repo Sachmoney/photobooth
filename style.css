@@ -78,17 +78,24 @@ header {
 
 header h1 {
     font-size: 3rem;
-    margin-bottom: 10px;
-    background: linear-gradient(135deg, var(--gold), var(--gold-light));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+    margin-bottom: 5px;
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: 8px;
+    text-transform: uppercase;
 }
 
 header p {
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: var(--text-secondary);
+}
+
+.est-tag {
+    font-size: 0.75rem;
+    color: #666666;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-top: 5px;
 }
 
 /* Auth Header Buttons */
