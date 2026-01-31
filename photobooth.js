@@ -439,25 +439,23 @@ function autoDownloadPhoto(photoData, filename) {
     }
 }
 
-// Upload photo to Firebase Cloud Storage
-async function uploadPhotoToFirebase(photo) {
-    // Check if Firebase sync is available and user is authenticated
+// Upload photo to cloud storage via Netlify backend
+async function uploadPhotoToCloud(photo) {
+    // Check if API client is available and user is authenticated
     if (typeof syncPhotoToStorage !== 'function') {
+        console.log('Cloud sync not available');
         return;
     }
 
     if (typeof isAuthenticated !== 'function' || !isAuthenticated()) {
-        // Queue for later sync
-        if (typeof queuePhotoForSync === 'function') {
-            queuePhotoForSync(photo);
-        }
+        console.log('Not authenticated, skipping cloud upload');
         return;
     }
 
     try {
         const result = await syncPhotoToStorage(photo);
         if (result.success) {
-            console.log('Photo uploaded to Firebase:', photo.id);
+            console.log('Photo uploaded to cloud:', photo.id);
             // Mark as uploaded
             const photos = getPhotosFromStorage();
             const idx = photos.findIndex(p => p.id === photo.id);
@@ -467,10 +465,10 @@ async function uploadPhotoToFirebase(photo) {
                 savePhotosToStorage(photos, true); // Skip cloud sync to avoid loop
             }
         } else if (result.queued) {
-            console.log('Photo queued for Firebase upload:', photo.id);
+            console.log('Photo queued for cloud upload:', photo.id);
         }
     } catch (error) {
-        console.error('Firebase upload error:', error);
+        console.error('Cloud upload error:', error);
     }
 }
 
