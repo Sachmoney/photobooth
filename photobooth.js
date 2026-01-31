@@ -98,6 +98,27 @@ setTimeout(updatePhotoStripButton, 0);
 // Load available cameras on page load
 loadAvailableCameras();
 
+// Listen for session sync from cloud
+window.addEventListener('sessionsLoaded', () => {
+    console.log('Sessions loaded from cloud, refreshing dropdown');
+    loadSessionsDropdown();
+    loadDesignFromStorage();
+    loadDesignSettingsFromStorage();
+    updatePhotoStripButton();
+});
+
+window.addEventListener('activeSessionChanged', (event) => {
+    console.log('Active session changed:', event.detail?.sessionId);
+    loadSessionsDropdown();
+    loadDesignFromStorage();
+    loadDesignSettingsFromStorage();
+    updatePhotoStripButton();
+    if (fullscreenSessionName) {
+        const session = getActiveSession ? getActiveSession() : null;
+        fullscreenSessionName.textContent = session ? session.name : 'No Session';
+    }
+});
+
 // Load quick gallery preview
 loadQuickGallery();
 
