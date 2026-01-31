@@ -912,6 +912,24 @@ footer {
     color: var(--text-secondary);
 }
 
+.refresh-btn {
+    margin-top: 15px;
+    padding: 8px 20px;
+    background: transparent;
+    color: #666666;
+    border: 1px solid #333333;
+    cursor: pointer;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+}
+
+.refresh-btn:hover {
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
 /* Footer Navigation */
 .footer-nav {
     display: flex;
