@@ -54,7 +54,7 @@ export default async (req, context) => {
             )
         `;
 
-        // Create photos table
+        // Create photos table (photo_url stores base64 data)
         await sql`
             CREATE TABLE IF NOT EXISTS photos (
                 id VARCHAR(50) PRIMARY KEY,
@@ -65,9 +65,15 @@ export default async (req, context) => {
                 is_strip BOOLEAN DEFAULT FALSE,
                 is_collage BOOLEAN DEFAULT FALSE,
                 metadata JSONB DEFAULT '{}',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `;
+
+        // Alter photo_url column to handle large base64 data if table already exists
+        await sql`
+            ALTER TABLE photos ALTER COLUMN photo_url TYPE TEXT
+        `.catch(() => {});  // Ignore error if column is already TEXT
 
         // Create auth_tokens table for session management
         await sql`
