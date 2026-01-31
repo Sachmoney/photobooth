@@ -241,7 +241,7 @@ function createCloudPhotoGalleryItem(photo, container = gallery) {
 
     const downloadBtn = document.createElement('button');
     downloadBtn.textContent = '⬇️ Download';
-    downloadBtn.onclick = () => downloadCloudPhoto(photo.storageUrl, `fe2p-photobooth-${photo.id}.jpg`);
+    downloadBtn.onclick = () => downloadCloudPhoto(photo.storageUrl, `boothx-${photo.id}.jpg`);
 
     const printBtn = document.createElement('button');
     printBtn.textContent = '🖨️ Print';
@@ -329,7 +329,7 @@ function createPhotoGalleryItem(photo, container = gallery) {
     
     const downloadBtn = document.createElement('button');
     downloadBtn.textContent = '⬇️ Download';
-    downloadBtn.onclick = () => downloadPhoto(photo.data, `fe2p-photobooth-${photo.id}.jpg`);
+    downloadBtn.onclick = () => downloadPhoto(photo.data, `boothx-${photo.id}.jpg`);
     
     const textBtn = document.createElement('button');
     textBtn.textContent = '📱 Text';
@@ -339,7 +339,7 @@ function createPhotoGalleryItem(photo, container = gallery) {
     const emailBtn = document.createElement('button');
     emailBtn.textContent = '✉️ Email';
     emailBtn.className = 'email-btn';
-    emailBtn.onclick = () => emailPhoto(photo.data, `fe2p-photobooth-${photo.id}.jpg`);
+    emailBtn.onclick = () => emailPhoto(photo.data, `boothx-${photo.id}.jpg`);
     
     const printBtn = document.createElement('button');
     printBtn.textContent = '🖨️ Print';
@@ -391,7 +391,7 @@ function createStripGalleryItem(photo, container = gallery) {
     
     const downloadBtn = document.createElement('button');
     downloadBtn.textContent = '⬇️ Download Strip';
-    downloadBtn.onclick = () => downloadPhoto(photo.data, `fe2p-photobooth-strip-${photo.id}.jpg`);
+    downloadBtn.onclick = () => downloadPhoto(photo.data, `boothx-strip-${photo.id}.jpg`);
     
     const textBtn = document.createElement('button');
     textBtn.textContent = '📱 Text';
@@ -401,7 +401,7 @@ function createStripGalleryItem(photo, container = gallery) {
     const emailBtn = document.createElement('button');
     emailBtn.textContent = '✉️ Email';
     emailBtn.className = 'email-btn';
-    emailBtn.onclick = () => emailPhoto(photo.data, `fe2p-photobooth-strip-${photo.id}.jpg`);
+    emailBtn.onclick = () => emailPhoto(photo.data, `boothx-strip-${photo.id}.jpg`);
     
     const printBtn = document.createElement('button');
     printBtn.textContent = '🖨️ Print Strip';
