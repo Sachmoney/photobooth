@@ -111,17 +111,17 @@ header p {
 
 .auth-btn-login {
     background: transparent;
-    color: var(--gold);
-    border: 1px solid var(--gold);
+    color: #ffffff;
+    border: 1px solid #ffffff;
 }
 
 .auth-btn-login:hover {
-    background: rgba(212, 175, 55, 0.1);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .auth-btn-signup {
-    background: linear-gradient(135deg, var(--gold), var(--gold-light));
-    color: #000;
+    background: #ffffff;
+    color: #000000;
 }
 
 .auth-btn-signup:hover {
