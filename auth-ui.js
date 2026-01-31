@@ -721,8 +721,17 @@ function initAuthUI() {
     // Only use header auth buttons (top right corner)
     createHeaderAuthButtons();
 
-    // Show login required overlay if not authenticated
-    showLoginRequiredOverlay();
+    // Check if user is logged in
+    const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+
+    if (!user) {
+        // Show login required overlay
+        showLoginRequiredOverlay();
+        // Auto-open the auth modal for first-time visitors
+        setTimeout(() => {
+            openAuthModal('signup');
+        }, 300);
+    }
 
     // Listen for auth state changes
     window.addEventListener('authStateChanged', (event) => {
@@ -730,8 +739,10 @@ function initAuthUI() {
 
         if (event.detail.user) {
             hideLoginRequiredOverlay();
+            closeAuthModal();
         } else {
             showLoginRequiredOverlay();
+            openAuthModal('signup');
         }
     });
 }
