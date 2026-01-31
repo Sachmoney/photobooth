@@ -662,8 +662,9 @@ function createLoginRequiredOverlay() {
     overlay.className = 'login-required-overlay';
     overlay.innerHTML = `
         <div class="login-required-content">
-            <h2>📸 Welcome to BOOTHX</h2>
-            <p>Please sign in or create an account to use the photo booth and save your photos.</p>
+            <h2>BOOTHX</h2>
+            <p class="est-tag" style="margin-bottom: 20px;">EST 2026</p>
+            <p>Sign in or create an account to continue.</p>
             <div class="login-required-buttons">
                 <button class="btn btn-secondary" onclick="openAuthModal('signin'); hideLoginRequiredOverlay();">Login</button>
                 <button class="btn btn-primary" onclick="openAuthModal('signup'); hideLoginRequiredOverlay();">Sign Up</button>
