@@ -420,11 +420,8 @@ function savePhoto(photoData) {
     // Auto-download photo to computer
     autoDownloadPhoto(photoData, `photo-${photoId}.jpg`);
 
-    // Auto-upload to Google Drive
-    uploadPhotoToGDrive(photoData, photoId, false);
-
-    // Auto-upload to Firebase Cloud Storage if authenticated
-    uploadPhotoToFirebase(photoObj);
+    // Auto-upload to cloud if authenticated
+    uploadPhotoToCloud(photoObj);
 }
 
 // Auto-download photo to computer
