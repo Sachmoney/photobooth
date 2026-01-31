@@ -15,43 +15,149 @@ if (printAllBtn) printAllBtn.addEventListener('click', printAllPhotos);
 // Load gallery on page load
 loadGallery();
 
-// Load Gallery
-function loadGallery() {
-    const photos = getPhotosFromStorage();
-    
+// Load Gallery (supports both local and cloud photos)
+async function loadGallery() {
+    const localPhotos = getPhotosFromStorage();
+
     if (!gallery) return;
-    
+
+    gallery.innerHTML = '<p class="empty-gallery">Loading photos...</p>';
+
+    // Get cloud photos if authenticated
+    let allPhotos = [...localPhotos];
+
+    if (typeof isAuthenticated === 'function' && isAuthenticated() && typeof syncPhotosFromCloud === 'function') {
+        try {
+            const cloudResult = await syncPhotosFromCloud();
+            if (cloudResult.success && cloudResult.photos) {
+                // Merge cloud photos with local photos (avoid duplicates by ID)
+                const localIds = new Set(localPhotos.map(p => String(p.id)));
+                const cloudOnlyPhotos = cloudResult.photos.filter(p => !localIds.has(String(p.id)));
+                allPhotos = [...localPhotos, ...cloudOnlyPhotos];
+            }
+        } catch (error) {
+            console.error('Error loading cloud photos:', error);
+        }
+    }
+
     gallery.innerHTML = '';
-    
-    if (photos.length === 0) {
+
+    if (allPhotos.length === 0) {
         gallery.innerHTML = '<p class="empty-gallery">No photos yet. Take some pictures!</p>';
         if (galleryActions) galleryActions.style.display = 'none';
         if (galleryStats) galleryStats.style.display = 'none';
         return;
     }
-    
+
     if (galleryStats) {
         galleryStats.style.display = 'block';
         if (photoCount) {
-            photoCount.textContent = photos.length;
+            photoCount.textContent = allPhotos.length;
         }
     }
-    
+
     if (galleryActions) {
         galleryActions.style.display = 'flex';
     }
-    
+
     // Display photos (strips first, then singles)
-    const strips = photos.filter(p => p.isStrip);
-    const singles = photos.filter(p => !p.isStrip);
-    
+    const strips = allPhotos.filter(p => p.isStrip);
+    const singles = allPhotos.filter(p => !p.isStrip);
+
     [...strips, ...singles].forEach(photo => {
         if (photo.isStrip && photo.stripPhotos) {
             createStripGalleryItem(photo);
+        } else if (photo.isCloud && photo.storageUrl) {
+            // Cloud-only photo
+            createCloudPhotoGalleryItem(photo);
         } else {
             createPhotoGalleryItem(photo);
         }
     });
+}
+
+// Create Cloud Photo Gallery Item (for photos only in cloud)
+function createCloudPhotoGalleryItem(photo) {
+    const photoDiv = document.createElement('div');
+    photoDiv.className = 'photo-item cloud-photo';
+    photoDiv.dataset.photoId = photo.id;
+
+    const img = document.createElement('img');
+    img.src = photo.storageUrl;
+    img.alt = 'Cloud Photo';
+    img.loading = 'lazy';
+
+    // Cloud indicator
+    const cloudBadge = document.createElement('div');
+    cloudBadge.className = 'cloud-badge';
+    cloudBadge.innerHTML = '☁️';
+    cloudBadge.title = 'Stored in cloud';
+
+    const actions = document.createElement('div');
+    actions.className = 'photo-actions';
+
+    const downloadBtn = document.createElement('button');
+    downloadBtn.textContent = '⬇️ Download';
+    downloadBtn.onclick = () => downloadCloudPhoto(photo.storageUrl, `fe2p-photobooth-${photo.id}.jpg`);
+
+    const printBtn = document.createElement('button');
+    printBtn.textContent = '🖨️ Print';
+    printBtn.className = 'print-btn';
+    printBtn.onclick = () => printPhoto(photo.storageUrl);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = '🗑️ Delete';
+    deleteBtn.onclick = async () => {
+        if (confirm('Delete this photo from cloud?')) {
+            await deleteCloudPhoto(photo.id);
+            loadGallery();
+        }
+    };
+
+    actions.appendChild(downloadBtn);
+    actions.appendChild(printBtn);
+    actions.appendChild(deleteBtn);
+
+    photoDiv.appendChild(img);
+    photoDiv.appendChild(cloudBadge);
+    photoDiv.appendChild(actions);
+    gallery.appendChild(photoDiv);
+}
+
+// Download cloud photo
+async function downloadCloudPhoto(url, filename) {
+    try {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const objectUrl = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = objectUrl;
+        link.click();
+
+        URL.revokeObjectURL(objectUrl);
+    } catch (error) {
+        console.error('Download error:', error);
+        alert('Failed to download photo');
+    }
+}
+
+// Delete cloud photo
+async function deleteCloudPhoto(photoId) {
+    const db = typeof getFirebaseDb === 'function' ? getFirebaseDb() : null;
+    const userId = typeof getUserId === 'function' ? getUserId() : null;
+
+    if (!db || !userId) {
+        return;
+    }
+
+    try {
+        await db.collection(`users/${userId}/photos`).doc(String(photoId)).delete();
+        console.log('Cloud photo deleted:', photoId);
+    } catch (error) {
+        console.error('Error deleting cloud photo:', error);
+    }
 }
 
 // Create Photo Gallery Item
