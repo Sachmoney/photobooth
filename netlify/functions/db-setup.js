@@ -70,10 +70,12 @@ export default async (req, context) => {
             )
         `;
 
-        // Alter photo_url column to handle large base64 data if table already exists
-        await sql`
-            ALTER TABLE photos ALTER COLUMN photo_url TYPE TEXT
-        `.catch(() => {});  // Ignore error if column is already TEXT
+        // Add updated_at column if it doesn't exist
+        try {
+            await sql`ALTER TABLE photos ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`;
+        } catch (e) {
+            console.log('updated_at column may already exist');
+        }
 
         // Create auth_tokens table for session management
         await sql`
