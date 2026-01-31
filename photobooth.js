@@ -2050,8 +2050,8 @@ async function shareReviewPhoto() {
 
             if (navigator.canShare({ files: [file] })) {
                 await navigator.share({
-                    title: 'FE2P PhotoBooth',
-                    text: 'Check out my photo from FE2P PhotoBooth!',
+                    title: 'BOOTHX',
+                    text: 'Check out my photo from BOOTHX!',
                     files: [file]
                 });
                 return;
@@ -2068,7 +2068,7 @@ async function shareReviewPhoto() {
     if (navigator.share) {
         try {
             await navigator.share({
-                title: 'FE2P PhotoBooth',
+                title: 'BOOTHX',
                 text: 'Check out my photo!',
                 url: photoUrl
             });
@@ -2092,8 +2092,8 @@ function emailReviewPhoto() {
 
     const baseUrl = window.location.origin;
     const photoUrl = `${baseUrl}/photo.html?id=${currentReviewPhoto.id}`;
-    const subject = encodeURIComponent('My Photo from FE2P PhotoBooth');
-    const body = encodeURIComponent(`Check out my photo from FE2P PhotoBooth!\n\nView and download here: ${photoUrl}`);
+    const subject = encodeURIComponent('My Photo from BOOTHX');
+    const body = encodeURIComponent(`Check out my photo from BOOTHX!\n\nView and download here: ${photoUrl}`);
 
     window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
 }
