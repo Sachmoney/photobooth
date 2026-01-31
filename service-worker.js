@@ -1,10 +1,11 @@
-const CACHE_NAME = 'photobooth-v6';
+const CACHE_NAME = 'photobooth-v7';
 const urlsToCache = [
   '/',
   '/index.html',
   '/photobooth.html',
   '/design.html',
   '/print.html',
+  '/photo.html',
   '/style.css',
   '/app.js',
   '/photobooth.js',
@@ -12,6 +13,7 @@ const urlsToCache = [
   '/print.js',
   '/api-client.js',
   '/auth-ui.js',
+  '/qrcode.min.js',
   '/manifest.json'
   // Note: icon files are optional, service worker will work without them
 ];
