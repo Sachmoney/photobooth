@@ -88,6 +88,13 @@ export default async (req, context) => {
             )
         `;
 
+        // Add active_session_id column to users table
+        try {
+            await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS active_session_id VARCHAR(50)`;
+        } catch (e) {
+            console.log('active_session_id column may already exist');
+        }
+
         return new Response(JSON.stringify({
             success: true,
             message: 'Database tables created successfully'
