@@ -1855,3 +1855,192 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+// =============================================
+// FULLSCREEN REVIEW SCREEN
+// =============================================
+
+// Review Screen Elements
+const fullscreenReview = document.getElementById('fullscreenReview');
+const reviewPhoto = document.getElementById('reviewPhoto');
+const reviewQRCode = document.getElementById('reviewQRCode');
+const reviewDownloadBtn = document.getElementById('reviewDownloadBtn');
+const reviewShareBtn = document.getElementById('reviewShareBtn');
+const reviewEmailBtn = document.getElementById('reviewEmailBtn');
+const reviewDoneBtn = document.getElementById('reviewDoneBtn');
+
+// Current photo being reviewed
+let currentReviewPhoto = null;
+
+// Show Fullscreen Review Screen
+function showFullscreenReview(photoObj) {
+    if (!fullscreenReview || !isFullscreenMode) {
+        // Fall back to regular QR modal if not in fullscreen
+        uploadPhotoToCloud(photoObj);
+        return;
+    }
+
+    currentReviewPhoto = photoObj;
+
+    // Display the photo
+    if (reviewPhoto) {
+        reviewPhoto.src = photoObj.data;
+    }
+
+    // Generate QR code
+    const baseUrl = window.location.origin;
+    const photoUrl = `${baseUrl}/photo.html?id=${photoObj.id}`;
+
+    if (typeof QRCode === 'function' && reviewQRCode) {
+        try {
+            const qrDataUrl = QRCode(photoUrl, {
+                size: 220,
+                margin: 2,
+                errorCorrectionLevel: 'M'
+            });
+            reviewQRCode.src = qrDataUrl;
+        } catch (error) {
+            console.error('QR code generation error:', error);
+        }
+    }
+
+    // Show review screen
+    fullscreenReview.classList.add('active');
+
+    // Upload to cloud in background
+    uploadPhotoToCloudSilent(photoObj);
+}
+
+// Hide Fullscreen Review Screen
+function hideFullscreenReview() {
+    if (fullscreenReview) {
+        fullscreenReview.classList.remove('active');
+    }
+    currentReviewPhoto = null;
+
+    // Show controls again
+    if (fullscreenControls) {
+        fullscreenControls.classList.remove('hidden');
+    }
+}
+
+// Upload photo silently (no QR popup since we're showing review screen)
+async function uploadPhotoToCloudSilent(photo) {
+    if (typeof syncPhotoToStorage !== 'function') {
+        console.log('Cloud sync not available');
+        return;
+    }
+
+    if (typeof isAuthenticated !== 'function' || !isAuthenticated()) {
+        console.log('Not authenticated, skipping cloud upload');
+        return;
+    }
+
+    try {
+        const result = await syncPhotoToStorage(photo);
+        if (result.success) {
+            console.log('Photo uploaded to cloud:', photo.id);
+            const photos = getPhotosFromStorage();
+            const idx = photos.findIndex(p => p.id === photo.id);
+            if (idx !== -1) {
+                photos[idx].uploadedToCloud = true;
+                photos[idx].cloudUrl = result.url;
+                savePhotosToStorage(photos, true);
+            }
+        }
+    } catch (error) {
+        console.error('Cloud upload error:', error);
+    }
+}
+
+// Download photo from review screen
+function downloadReviewPhoto() {
+    if (!currentReviewPhoto) return;
+
+    const link = document.createElement('a');
+    const prefix = currentReviewPhoto.isStrip ? 'photostrip' : currentReviewPhoto.isCollage ? 'collage' : 'photo';
+    link.download = `${prefix}-${currentReviewPhoto.id}.jpg`;
+    link.href = currentReviewPhoto.data;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Share photo using Web Share API
+async function shareReviewPhoto() {
+    if (!currentReviewPhoto) return;
+
+    // Check if Web Share API is available
+    if (navigator.share && navigator.canShare) {
+        try {
+            // Convert data URL to blob
+            const response = await fetch(currentReviewPhoto.data);
+            const blob = await response.blob();
+            const file = new File([blob], `photo-${currentReviewPhoto.id}.jpg`, { type: 'image/jpeg' });
+
+            if (navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    title: 'FE2P PhotoBooth',
+                    text: 'Check out my photo from FE2P PhotoBooth!',
+                    files: [file]
+                });
+                return;
+            }
+        } catch (error) {
+            console.log('Share error:', error);
+        }
+    }
+
+    // Fallback: share URL
+    const baseUrl = window.location.origin;
+    const photoUrl = `${baseUrl}/photo.html?id=${currentReviewPhoto.id}`;
+
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: 'FE2P PhotoBooth',
+                text: 'Check out my photo!',
+                url: photoUrl
+            });
+        } catch (error) {
+            console.log('Share cancelled or failed:', error);
+        }
+    } else {
+        // Copy URL to clipboard
+        try {
+            await navigator.clipboard.writeText(photoUrl);
+            alert('Photo link copied to clipboard!');
+        } catch (error) {
+            console.log('Clipboard error:', error);
+        }
+    }
+}
+
+// Email photo
+function emailReviewPhoto() {
+    if (!currentReviewPhoto) return;
+
+    const baseUrl = window.location.origin;
+    const photoUrl = `${baseUrl}/photo.html?id=${currentReviewPhoto.id}`;
+    const subject = encodeURIComponent('My Photo from FE2P PhotoBooth');
+    const body = encodeURIComponent(`Check out my photo from FE2P PhotoBooth!\n\nView and download here: ${photoUrl}`);
+
+    window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
+}
+
+// Review Screen Event Listeners
+if (reviewDownloadBtn) {
+    reviewDownloadBtn.addEventListener('click', downloadReviewPhoto);
+}
+
+if (reviewShareBtn) {
+    reviewShareBtn.addEventListener('click', shareReviewPhoto);
+}
+
+if (reviewEmailBtn) {
+    reviewEmailBtn.addEventListener('click', emailReviewPhoto);
+}
+
+if (reviewDoneBtn) {
+    reviewDoneBtn.addEventListener('click', hideFullscreenReview);
+}
+
