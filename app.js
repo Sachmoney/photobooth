@@ -576,3 +576,26 @@ function printPhoto(photoData) {
     printWindow.document.close();
 }
 
+// Hard Refresh - clears cache and reloads
+function hardRefresh() {
+    if ('caches' in window) {
+        caches.keys().then(names => {
+            names.forEach(name => {
+                caches.delete(name);
+            });
+        });
+    }
+
+    // Unregister service worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+            registrations.forEach(registration => {
+                registration.unregister();
+            });
+        });
+    }
+
+    // Force reload from server
+    window.location.reload(true);
+}
+
