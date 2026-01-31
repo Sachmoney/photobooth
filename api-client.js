@@ -193,6 +193,28 @@ async function syncSessionsToCloud(sessions) {
     }
 }
 
+// Delete session from cloud
+async function deleteSessionFromCloud(sessionId) {
+    const token = getAuthToken();
+    if (!token) return { success: false, error: 'Not authenticated' };
+
+    try {
+        const response = await fetch(`${API_BASE}/sessions?id=${sessionId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        const data = await response.json();
+        console.log('Delete session from cloud result:', data);
+        return data;
+    } catch (error) {
+        console.error('Delete session from cloud error:', error);
+        return { success: false, error: error.message };
+    }
+}
+
 // Get sessions from cloud
 async function syncSessionsFromCloud() {
     const token = getAuthToken();
