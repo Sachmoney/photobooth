@@ -417,6 +417,9 @@ function savePhoto(photoData) {
 
     console.log('Photo saved:', photoId, 'Session:', activeSessionId);
 
+    // Auto-download photo to computer
+    autoDownloadPhoto(photoData, `photo-${photoId}.jpg`);
+
     // Auto-upload to Google Drive
     uploadPhotoToGDrive(photoData, photoId, false);
 
