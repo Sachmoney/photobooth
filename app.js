@@ -50,11 +50,27 @@ function getPhotosFromStorage() {
 }
 
 // Save Photos to Storage
-function savePhotosToStorage(photos) {
+function savePhotosToStorage(photos, skipCloudSync = false) {
     try {
         const photosJson = JSON.stringify(photos);
         localStorage.setItem(StorageKeys.PHOTOS, photosJson);
         console.log('Photos saved to storage:', photos.length, 'photos');
+
+        // Queue new photos for cloud sync if authenticated (and not skipped)
+        if (!skipCloudSync && typeof isAuthenticated === 'function' && isAuthenticated()) {
+            // Find photos that haven't been synced yet
+            const unsyncedPhotos = photos.filter(p => !p.uploadedToCloud && p.data);
+            if (unsyncedPhotos.length > 0 && typeof queuePhotoForSync === 'function') {
+                unsyncedPhotos.forEach(photo => {
+                    queuePhotoForSync(photo);
+                });
+                // Process queue
+                if (typeof processOfflineQueue === 'function') {
+                    processOfflineQueue();
+                }
+            }
+        }
+
         return true;
     } catch (error) {
         console.error('Error saving photos:', error);
@@ -74,6 +90,14 @@ function savePhotosToStorage(photos) {
         }
         return false;
     }
+}
+
+// Check if user is authenticated (helper that works even if firebase-auth.js isn't loaded)
+function isUserAuthenticated() {
+    if (typeof isAuthenticated === 'function') {
+        return isAuthenticated();
+    }
+    return false;
 }
 
 // Get Videos from Storage
