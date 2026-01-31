@@ -1,10 +1,7 @@
 // Upload API
-// Handles photo file uploads to Netlify Blobs
+// Handles photo uploads - stores base64 data directly in database
 
 import { neon } from '@neondatabase/serverless';
-import { getStore } from '@netlify/blobs';
-
-const sql = neon(process.env.DATABASE_URL);
 
 // CORS headers
 const corsHeaders = {
@@ -13,20 +10,6 @@ const corsHeaders = {
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Content-Type': 'application/json'
 };
-
-// Get user from token
-async function getUserFromToken(token) {
-    if (!token) return null;
-
-    const result = await sql`
-        SELECT u.id, u.email, u.display_name
-        FROM users u
-        JOIN auth_tokens t ON u.id = t.user_id
-        WHERE t.token = ${token} AND t.expires_at > NOW()
-    `;
-
-    return result.length > 0 ? result[0] : null;
-}
 
 export default async (req, context) => {
     // Handle CORS preflight
@@ -41,11 +24,20 @@ export default async (req, context) => {
         }), { status: 405, headers: corsHeaders });
     }
 
+    if (!process.env.DATABASE_URL) {
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Database not configured'
+        }), { status: 500, headers: corsHeaders });
+    }
+
+    const sql = neon(process.env.DATABASE_URL);
+
+    // Get user from token
     const authHeader = req.headers.get('Authorization');
     const token = authHeader?.replace('Bearer ', '');
-    const user = await getUserFromToken(token);
 
-    if (!user) {
+    if (!token) {
         return new Response(JSON.stringify({
             success: false,
             error: 'Unauthorized'
@@ -53,6 +45,21 @@ export default async (req, context) => {
     }
 
     try {
+        const userResult = await sql`
+            SELECT u.id, u.email
+            FROM users u
+            JOIN auth_tokens t ON u.id = t.user_id
+            WHERE t.token = ${token} AND t.expires_at > NOW()
+        `;
+
+        if (userResult.length === 0) {
+            return new Response(JSON.stringify({
+                success: false,
+                error: 'Invalid or expired token'
+            }), { status: 401, headers: corsHeaders });
+        }
+
+        const user = userResult[0];
         const { photoData, photoId, sessionId, isStrip, isCollage } = await req.json();
 
         if (!photoData) {
@@ -62,39 +69,20 @@ export default async (req, context) => {
             }), { status: 400, headers: corsHeaders });
         }
 
-        // Convert base64 to buffer
-        const base64Data = photoData.replace(/^data:image\/\w+;base64,/, '');
-        const buffer = Buffer.from(base64Data, 'base64');
-
-        // Store in Netlify Blobs
-        const store = getStore('photos');
         const id = photoId || Date.now().toString();
-        const blobKey = `${user.id}/${id}.jpg`;
 
-        await store.set(blobKey, buffer, {
-            metadata: {
-                userId: user.id.toString(),
-                sessionId: sessionId || '',
-                isStrip: isStrip ? 'true' : 'false',
-                isCollage: isCollage ? 'true' : 'false'
-            }
-        });
-
-        // Get the URL (Netlify Blobs provides URLs automatically)
-        const photoUrl = `/.netlify/blobs/photos/${blobKey}`;
-
-        // Save to database
+        // Store photo data directly in database
         await sql`
             INSERT INTO photos (id, user_id, session_id, photo_url, is_strip, is_collage)
-            VALUES (${id}, ${user.id}, ${sessionId || null}, ${photoUrl}, ${isStrip || false}, ${isCollage || false})
+            VALUES (${id}, ${user.id}, ${sessionId || null}, ${photoData}, ${isStrip || false}, ${isCollage || false})
             ON CONFLICT (id) DO UPDATE
-            SET photo_url = ${photoUrl}, updated_at = NOW()
+            SET photo_url = ${photoData}, updated_at = NOW()
         `;
 
         return new Response(JSON.stringify({
             success: true,
             photoId: id,
-            photoUrl: photoUrl
+            photoUrl: `/api/photo?id=${id}`
         }), { headers: corsHeaders });
 
     } catch (error) {
