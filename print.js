@@ -299,17 +299,26 @@ async function clearGallery() {
     savePhotosToStorage([]);
 
     // Clear from cloud if authenticated
+    console.log('Checking authentication...');
+    console.log('isAuthenticated:', typeof isAuthenticated === 'function' ? isAuthenticated() : 'function not found');
+
     if (typeof isAuthenticated === 'function' && isAuthenticated()) {
         try {
             const token = typeof getAuthToken === 'function' ? getAuthToken() : null;
+            console.log('Token found:', token ? 'yes' : 'no');
+
             if (token) {
+                console.log('Making DELETE request to /api/delete-photos...');
                 const response = await fetch('/api/delete-photos', {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
+                console.log('Response status:', response.status);
                 const result = await response.json();
+                console.log('Response body:', result);
+
                 if (result.success) {
                     console.log('Cloud photos deleted:', result.message);
                 } else {
@@ -319,6 +328,8 @@ async function clearGallery() {
         } catch (error) {
             console.error('Error deleting cloud photos:', error);
         }
+    } else {
+        console.log('Not authenticated, skipping cloud delete');
     }
 
     loadGallery();
