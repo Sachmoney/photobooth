@@ -333,10 +333,25 @@ function deleteSession(sessionId) {
     const sessions = getSessions();
     const filtered = sessions.filter(s => s.id !== sessionId);
     saveSessions(filtered);
-    
+
     // If deleted session was active, clear active session
     if (getActiveSessionId() === sessionId) {
         setActiveSessionId(null);
+    }
+
+    // Delete from cloud if authenticated
+    if (typeof isAuthenticated === 'function' && isAuthenticated()) {
+        if (typeof deleteSessionFromCloud === 'function') {
+            deleteSessionFromCloud(sessionId).then(result => {
+                if (result.success) {
+                    console.log('Session deleted from cloud:', sessionId);
+                } else {
+                    console.error('Failed to delete session from cloud:', result.error);
+                }
+            }).catch(err => {
+                console.error('Error deleting session from cloud:', err);
+            });
+        }
     }
 }
 
