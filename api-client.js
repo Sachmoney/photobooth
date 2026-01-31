@@ -226,6 +226,49 @@ async function syncSessionsFromCloud() {
     }
 }
 
+// Get active session ID from cloud
+async function getActiveSessionFromCloud() {
+    const token = getAuthToken();
+    if (!token) return { success: false, error: 'Not authenticated' };
+
+    try {
+        const response = await fetch(`${API_BASE}/sessions?action=get-active`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        const data = await response.json();
+        console.log('Active session from cloud:', data);
+        return data;
+    } catch (error) {
+        console.error('Get active session error:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+// Set active session ID in cloud
+async function setActiveSessionInCloud(activeSessionId) {
+    const token = getAuthToken();
+    if (!token) return { success: false, error: 'Not authenticated' };
+
+    try {
+        const response = await fetch(`${API_BASE}/sessions?action=set-active`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ activeSessionId })
+        });
+
+        const data = await response.json();
+        console.log('Set active session result:', data);
+        return data;
+    } catch (error) {
+        console.error('Set active session error:', error);
+        return { success: false, error: error.message };
+    }
+}
+
 // =============================================
 // PHOTOS SYNC
 // =============================================
