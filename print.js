@@ -15,7 +15,7 @@ if (printAllBtn) printAllBtn.addEventListener('click', printAllPhotos);
 // Load gallery on page load
 loadGallery();
 
-// Load Gallery (supports both local and cloud photos)
+// Load Gallery (supports both local and cloud photos, grouped by session)
 async function loadGallery() {
     const localPhotos = getPhotosFromStorage();
 
@@ -60,20 +60,151 @@ async function loadGallery() {
         galleryActions.style.display = 'flex';
     }
 
-    // Display photos (strips first, then singles)
-    const strips = allPhotos.filter(p => p.isStrip);
-    const singles = allPhotos.filter(p => !p.isStrip);
+    // Get sessions for names
+    const sessions = typeof getSessions === 'function' ? getSessions() : [];
+    const sessionMap = {};
+    sessions.forEach(s => {
+        sessionMap[s.id] = s.name;
+    });
 
-    [...strips, ...singles].forEach(photo => {
-        if (photo.isStrip && photo.stripPhotos) {
-            createStripGalleryItem(photo);
-        } else if (photo.isCloud && photo.storageUrl) {
-            // Cloud-only photo
-            createCloudPhotoGalleryItem(photo);
-        } else {
-            createPhotoGalleryItem(photo);
+    // Group photos by session
+    const photosBySession = {};
+    allPhotos.forEach(photo => {
+        const sessionId = photo.sessionId || 'unsorted';
+        if (!photosBySession[sessionId]) {
+            photosBySession[sessionId] = [];
+        }
+        photosBySession[sessionId].push(photo);
+    });
+
+    // Sort session IDs: put unsorted last, others by most recent photo
+    const sessionIds = Object.keys(photosBySession).sort((a, b) => {
+        if (a === 'unsorted') return 1;
+        if (b === 'unsorted') return -1;
+        // Sort by most recent photo in session
+        const aLatest = Math.max(...photosBySession[a].map(p => p.id || 0));
+        const bLatest = Math.max(...photosBySession[b].map(p => p.id || 0));
+        return bLatest - aLatest;
+    });
+
+    // Render each session group
+    sessionIds.forEach(sessionId => {
+        const photos = photosBySession[sessionId];
+        const sessionName = sessionId === 'unsorted' ? 'Unsorted Photos' : (sessionMap[sessionId] || `Session ${sessionId}`);
+
+        // Create session group container
+        const sessionGroup = document.createElement('div');
+        sessionGroup.className = 'session-group';
+        sessionGroup.dataset.sessionId = sessionId;
+
+        // Create session header
+        const sessionHeader = document.createElement('div');
+        sessionHeader.className = 'session-group-header';
+        sessionHeader.innerHTML = `
+            <div class="session-group-info">
+                <span class="session-group-toggle">▼</span>
+                <h3 class="session-group-name">${sessionName}</h3>
+                <span class="session-group-count">${photos.length} photo${photos.length !== 1 ? 's' : ''}</span>
+            </div>
+            <div class="session-group-actions">
+                <button class="print-session-btn" title="Print all photos in this session">Print Session</button>
+            </div>
+        `;
+
+        // Toggle collapse on header click
+        sessionHeader.querySelector('.session-group-info').addEventListener('click', () => {
+            sessionGroup.classList.toggle('collapsed');
+            const toggle = sessionHeader.querySelector('.session-group-toggle');
+            toggle.textContent = sessionGroup.classList.contains('collapsed') ? '▶' : '▼';
+        });
+
+        // Print session button
+        sessionHeader.querySelector('.print-session-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            printSessionPhotos(photos);
+        });
+
+        sessionGroup.appendChild(sessionHeader);
+
+        // Create photos container
+        const photosContainer = document.createElement('div');
+        photosContainer.className = 'session-photos-container';
+
+        // Sort photos: strips first, then by date
+        const strips = photos.filter(p => p.isStrip);
+        const singles = photos.filter(p => !p.isStrip);
+        const sortedPhotos = [...strips, ...singles];
+
+        sortedPhotos.forEach(photo => {
+            if (photo.isStrip && photo.stripPhotos) {
+                createStripGalleryItem(photo, photosContainer);
+            } else if (photo.isCloud && photo.storageUrl) {
+                createCloudPhotoGalleryItem(photo, photosContainer);
+            } else {
+                createPhotoGalleryItem(photo, photosContainer);
+            }
+        });
+
+        sessionGroup.appendChild(photosContainer);
+        gallery.appendChild(sessionGroup);
+    });
+}
+
+// Print all photos in a session
+function printSessionPhotos(photos) {
+    if (photos.length === 0) {
+        alert('No photos to print');
+        return;
+    }
+
+    const printWindow = window.open('', '_blank');
+    let htmlContent = `
+        <html>
+            <head>
+                <title>Print Session Photos</title>
+                <style>
+                    @media print {
+                        @page { margin: 0.5cm; size: auto; }
+                    }
+                    body {
+                        display: grid;
+                        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                        gap: 20px;
+                        padding: 20px;
+                        background: #f0f0f0;
+                    }
+                    img {
+                        width: 100%;
+                        height: auto;
+                        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                        page-break-inside: avoid;
+                    }
+                    .strip { grid-column: 1 / -1; }
+                </style>
+            </head>
+            <body>
+    `;
+
+    photos.forEach(photo => {
+        const src = photo.data || photo.storageUrl || '';
+        if (src) {
+            htmlContent += `<img src="${src}" alt="Photo" ${photo.isStrip ? 'class="strip"' : ''}>`;
         }
     });
+
+    htmlContent += `
+            </body>
+            <script>
+                window.onload = function() {
+                    window.print();
+                    window.onafterprint = function() { window.close(); };
+                };
+            </script>
+        </html>
+    `;
+
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
 }
 
 // Create Cloud Photo Gallery Item (for photos only in cloud)
