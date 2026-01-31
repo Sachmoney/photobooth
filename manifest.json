@@ -1,7 +1,7 @@
 {
-  "name": "FE2P PhotoBooth",
-  "short_name": "FE2P",
-  "description": "Flawless Events 2 Perfection - PhotoBooth App",
+  "name": "BOOTHX",
+  "short_name": "BOOTHX",
+  "description": "BOOTHX - Photo Booth App",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
