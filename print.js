@@ -252,7 +252,7 @@ function createCloudPhotoGalleryItem(photo, container = gallery) {
     photoDiv.appendChild(img);
     photoDiv.appendChild(cloudBadge);
     photoDiv.appendChild(actions);
-    gallery.appendChild(photoDiv);
+    container.appendChild(photoDiv);
 }
 
 // Download cloud photo
