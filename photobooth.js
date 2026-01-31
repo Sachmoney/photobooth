@@ -798,11 +798,8 @@ async function createPhotoStrip(stripPhotos) {
     // Auto-download strip to computer
     autoDownloadPhoto(combinedStrip, `photostrip-${photoId}.jpg`);
 
-    // Auto-upload strip to Google Drive
-    uploadPhotoToGDrive(combinedStrip, photoId, true);
-
-    // Auto-upload to Firebase Cloud Storage if authenticated
-    uploadPhotoToFirebase(photoObj);
+    // Auto-upload to cloud if authenticated
+    uploadPhotoToCloud(photoObj);
 }
 
 // Create Combined Strip Image
