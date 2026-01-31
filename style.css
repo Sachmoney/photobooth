@@ -182,10 +182,8 @@ header p {
 .login-required-content h2 {
     font-size: 2rem;
     margin-bottom: 15px;
-    background: linear-gradient(135deg, var(--gold), var(--gold-light));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #ffffff;
+    letter-spacing: 4px;
 }
 
 .login-required-content p {
