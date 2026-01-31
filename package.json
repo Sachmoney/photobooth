@@ -1,0 +1,9 @@
+{
+  "name": "fe2p-photobooth",
+  "version": "1.0.0",
+  "description": "FE2P PhotoBooth - Photo booth web app",
+  "dependencies": {
+    "@neondatabase/serverless": "^0.9.0",
+    "@netlify/blobs": "^7.0.0"
+  }
+}
