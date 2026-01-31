@@ -46,8 +46,46 @@ export default async (req, context) => {
 
     const url = new URL(req.url);
     const sessionId = url.searchParams.get('id');
+    const action = url.searchParams.get('action');
 
     try {
+        // Handle active session actions
+        if (action === 'get-active') {
+            const result = await sql`
+                SELECT active_session_id FROM users WHERE id = ${user.id}
+            `;
+            return new Response(JSON.stringify({
+                success: true,
+                activeSessionId: result[0]?.active_session_id || null
+            }), { headers: corsHeaders });
+        }
+
+        if (action === 'set-active' && req.method === 'POST') {
+            const { activeSessionId } = await req.json();
+
+            // Verify the session belongs to this user (if not null)
+            if (activeSessionId) {
+                const sessionCheck = await sql`
+                    SELECT id FROM sessions WHERE id = ${activeSessionId} AND user_id = ${user.id}
+                `;
+                if (sessionCheck.length === 0) {
+                    return new Response(JSON.stringify({
+                        success: false,
+                        error: 'Session not found or does not belong to you'
+                    }), { status: 404, headers: corsHeaders });
+                }
+            }
+
+            await sql`
+                UPDATE users SET active_session_id = ${activeSessionId} WHERE id = ${user.id}
+            `;
+
+            return new Response(JSON.stringify({
+                success: true,
+                activeSessionId
+            }), { headers: corsHeaders });
+        }
+
         // GET - List all sessions or get one
         if (req.method === 'GET') {
             if (sessionId) {
