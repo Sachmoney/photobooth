@@ -1948,20 +1948,31 @@ function hideFullscreenReview() {
 
 // Upload photo silently (no QR popup since we're showing review screen)
 async function uploadPhotoToCloudSilent(photo) {
+    console.log('uploadPhotoToCloudSilent called for photo:', photo.id);
+
     if (typeof syncPhotoToStorage !== 'function') {
-        console.log('Cloud sync not available');
+        console.error('Cloud sync not available - syncPhotoToStorage is not defined');
         return;
     }
 
-    if (typeof isAuthenticated !== 'function' || !isAuthenticated()) {
-        console.log('Not authenticated, skipping cloud upload');
+    if (typeof isAuthenticated !== 'function') {
+        console.error('isAuthenticated function not available');
         return;
     }
+
+    if (!isAuthenticated()) {
+        console.error('Not authenticated, skipping cloud upload');
+        return;
+    }
+
+    console.log('Starting cloud upload for photo:', photo.id);
 
     try {
         const result = await syncPhotoToStorage(photo);
+        console.log('Upload result:', result);
+
         if (result.success) {
-            console.log('Photo uploaded to cloud:', photo.id);
+            console.log('Photo uploaded to cloud successfully:', photo.id);
             const photos = getPhotosFromStorage();
             const idx = photos.findIndex(p => p.id === photo.id);
             if (idx !== -1) {
@@ -1969,6 +1980,8 @@ async function uploadPhotoToCloudSilent(photo) {
                 photos[idx].cloudUrl = result.url;
                 savePhotosToStorage(photos, true);
             }
+        } else {
+            console.error('Upload failed:', result.error || result);
         }
     } catch (error) {
         console.error('Cloud upload error:', error);
