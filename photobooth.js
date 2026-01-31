@@ -441,37 +441,51 @@ function autoDownloadPhoto(photoData, filename) {
 
 // Upload photo to cloud storage via Netlify backend
 async function uploadPhotoToCloud(photo) {
+    console.log('uploadPhotoToCloud called for photo:', photo.id);
+
     // Check if API client is available and user is authenticated
     if (typeof syncPhotoToStorage !== 'function') {
-        console.log('Cloud sync not available, showing local QR');
-        // Still show QR code with local photo data
+        console.error('Cloud sync not available - syncPhotoToStorage not defined');
         showQRCode(photo.id, photo.data);
         return;
     }
 
-    if (typeof isAuthenticated !== 'function' || !isAuthenticated()) {
-        console.log('Not authenticated, showing local QR');
-        // Still show QR code with local photo data
+    if (typeof isAuthenticated !== 'function') {
+        console.error('isAuthenticated not defined');
         showQRCode(photo.id, photo.data);
         return;
     }
+
+    const authStatus = isAuthenticated();
+    console.log('Auth status:', authStatus);
+
+    if (!authStatus) {
+        console.log('Not authenticated, showing local QR');
+        showQRCode(photo.id, photo.data);
+        return;
+    }
+
+    console.log('Starting upload to cloud...');
 
     try {
         const result = await syncPhotoToStorage(photo);
+        console.log('Upload result:', JSON.stringify(result));
+
         if (result.success) {
             console.log('Photo uploaded to cloud:', photo.id);
-            // Mark as uploaded
             const photos = getPhotosFromStorage();
             const idx = photos.findIndex(p => p.id === photo.id);
             if (idx !== -1) {
                 photos[idx].uploadedToCloud = true;
                 photos[idx].cloudUrl = result.url;
-                savePhotosToStorage(photos, true); // Skip cloud sync to avoid loop
+                savePhotosToStorage(photos, true);
             }
-            // Show QR code with cloud URL
             showQRCode(result.photoId || photo.id, photo.data, true);
         } else if (result.queued) {
             console.log('Photo queued for cloud upload:', photo.id);
+            showQRCode(photo.id, photo.data);
+        } else {
+            console.error('Upload failed:', result.error || result);
             showQRCode(photo.id, photo.data);
         }
     } catch (error) {
