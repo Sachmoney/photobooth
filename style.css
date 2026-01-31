@@ -692,6 +692,100 @@ main {
     font-style: italic;
 }
 
+/* Session Group Styles */
+.session-group {
+    background: var(--card-bg);
+    border-radius: 16px;
+    margin-bottom: 24px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.session-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+    border-bottom: 1px solid var(--border-color);
+}
+
+.session-group-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    flex: 1;
+}
+
+.session-group-toggle {
+    color: var(--gold);
+    font-size: 12px;
+    transition: transform 0.3s ease;
+}
+
+.session-group.collapsed .session-group-toggle {
+    transform: rotate(-90deg);
+}
+
+.session-group-name {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.session-group-count {
+    background: var(--gold);
+    color: #000;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.session-group-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.print-session-btn {
+    padding: 8px 16px;
+    background: var(--success-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.print-session-btn:hover {
+    background: #059669;
+    transform: scale(1.05);
+}
+
+.session-photos-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.session-group.collapsed .session-photos-container {
+    display: none;
+}
+
+/* Unsorted session styling */
+.session-group[data-session-id="unsorted"] .session-group-header {
+    background: linear-gradient(135deg, rgba(107, 114, 128, 0.1), rgba(107, 114, 128, 0.05));
+}
+
+.session-group[data-session-id="unsorted"] .session-group-count {
+    background: #6b7280;
+    color: white;
+}
+
 .photo-item {
     position: relative;
     border-radius: 12px;
