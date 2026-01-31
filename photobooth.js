@@ -726,11 +726,8 @@ function saveCollagePhoto(photoData) {
     // Auto-download collage to computer
     autoDownloadPhoto(photoData, `collage-${photoId}.jpg`);
 
-    // Auto-upload to Google Drive
-    uploadPhotoToGDrive(photoData, photoId, false);
-
-    // Auto-upload to Firebase Cloud Storage if authenticated
-    uploadPhotoToFirebase(photoObj);
+    // Auto-upload to cloud if authenticated
+    uploadPhotoToCloud(photoObj);
 }
 
 // Upload photo to Google Drive
