@@ -1285,6 +1285,12 @@ function handleFullscreenChange() {
 function exitFullscreenBooth() {
     isFullscreenMode = false;
 
+    // Hide review screen if showing
+    const reviewScreen = document.getElementById('fullscreenReview');
+    if (reviewScreen) {
+        reviewScreen.classList.remove('active');
+    }
+
     // Hide fullscreen booth
     if (fullscreenBooth) {
         fullscreenBooth.classList.remove('active');
