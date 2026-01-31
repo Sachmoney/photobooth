@@ -303,11 +303,11 @@ async function deleteCloudPhoto(photoId) {
 }
 
 // Create Photo Gallery Item
-function createPhotoGalleryItem(photo) {
+function createPhotoGalleryItem(photo, container = gallery) {
     const photoDiv = document.createElement('div');
     photoDiv.className = 'photo-item';
     photoDiv.dataset.photoId = photo.id;
-    
+
     const img = document.createElement('img');
     img.src = photo.data;
     img.alt = 'Photo';
