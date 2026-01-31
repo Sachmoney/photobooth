@@ -15,6 +15,18 @@ if (printAllBtn) printAllBtn.addEventListener('click', printAllPhotos);
 // Load gallery on page load
 loadGallery();
 
+// Refresh gallery when sessions sync from cloud (to get session names)
+window.addEventListener('sessionsLoaded', () => {
+    console.log('Sessions synced, refreshing gallery');
+    loadGallery();
+});
+
+// Refresh gallery when user signs in
+window.addEventListener('userSignedIn', () => {
+    console.log('User signed in, refreshing gallery');
+    loadGallery();
+});
+
 // Load Gallery (supports both local and cloud photos, grouped by session)
 async function loadGallery() {
     const localPhotos = getPhotosFromStorage();
