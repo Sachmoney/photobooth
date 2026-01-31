@@ -404,7 +404,7 @@ function textPhoto(photoData) {
                 try {
                     await navigator.share({
                         files: [file],
-                        title: 'FE2P PhotoBooth Photo',
+                        title: 'BOOTHX Photo',
                         text: 'Check out my photo from Flawless Events 2 Perfection!'
                     });
                     return;
@@ -494,7 +494,7 @@ function showShareNotification(message) {
 // Email Photo utility
 function emailPhoto(photoData, filename) {
     // Create a data URL blob link for email
-    const mailtoLink = `mailto:?subject=${encodeURIComponent('FE2P PhotoBooth Photo')}&body=${encodeURIComponent('Check out my photo from Flawless Events 2 Perfection PhotoBooth!\n\n')}`;
+    const mailtoLink = `mailto:?subject=${encodeURIComponent('BOOTHX Photo')}&body=${encodeURIComponent('Check out my photo from Flawless Events 2 Perfection PhotoBooth!\n\n')}`;
     
     // Try to create a downloadable link first
     const link = document.createElement('a');
