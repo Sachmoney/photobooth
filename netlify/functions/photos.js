@@ -4,8 +4,6 @@
 import { neon } from '@neondatabase/serverless';
 import { getStore } from '@netlify/blobs';
 
-const sql = neon(process.env.DATABASE_URL);
-
 // CORS headers
 const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
@@ -14,34 +12,60 @@ const corsHeaders = {
     'Content-Type': 'application/json'
 };
 
-// Get user from token
-async function getUserFromToken(token) {
-    if (!token) return null;
-
-    const result = await sql`
-        SELECT u.id, u.email, u.display_name
-        FROM users u
-        JOIN auth_tokens t ON u.id = t.user_id
-        WHERE t.token = ${token} AND t.expires_at > NOW()
-    `;
-
-    return result.length > 0 ? result[0] : null;
-}
-
 export default async (req, context) => {
     // Handle CORS preflight
     if (req.method === 'OPTIONS') {
         return new Response(null, { headers: corsHeaders });
     }
 
+    // Check database configuration
+    if (!process.env.DATABASE_URL) {
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Database not configured'
+        }), { status: 500, headers: corsHeaders });
+    }
+
+    let sql;
+    try {
+        sql = neon(process.env.DATABASE_URL);
+    } catch (e) {
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Database connection failed: ' + e.message
+        }), { status: 500, headers: corsHeaders });
+    }
+
     const authHeader = req.headers.get('Authorization');
     const token = authHeader?.replace('Bearer ', '');
-    const user = await getUserFromToken(token);
+
+    if (!token) {
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Unauthorized - no token'
+        }), { status: 401, headers: corsHeaders });
+    }
+
+    let user;
+    try {
+        const result = await sql`
+            SELECT u.id, u.email, u.display_name
+            FROM users u
+            JOIN auth_tokens t ON u.id = t.user_id
+            WHERE t.token = ${token} AND t.expires_at > NOW()
+        `;
+        user = result.length > 0 ? result[0] : null;
+    } catch (e) {
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Auth check failed: ' + e.message
+        }), { status: 500, headers: corsHeaders });
+    }
 
     if (!user) {
         return new Response(JSON.stringify({
             success: false,
-            error: 'Unauthorized'
+            error: 'Unauthorized - invalid token'
         }), { status: 401, headers: corsHeaders });
     }
 
