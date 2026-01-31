@@ -2,11 +2,13 @@
 // Returns a photo by ID for public viewing/downloading
 
 import { neon } from '@neondatabase/serverless';
-import { getStore } from '@netlify/blobs';
-
-const sql = neon(process.env.DATABASE_URL);
 
 export default async (req, context) => {
+    if (!process.env.DATABASE_URL) {
+        return new Response('Database not configured', { status: 500 });
+    }
+
+    const sql = neon(process.env.DATABASE_URL);
     const url = new URL(req.url);
     const photoId = url.searchParams.get('id');
 
@@ -15,39 +17,43 @@ export default async (req, context) => {
     }
 
     try {
-        // Get photo metadata from database
+        // Get photo from database (photo_url contains the base64 data)
         const result = await sql`
-            SELECT id, user_id, photo_url FROM photos WHERE id = ${photoId}
+            SELECT id, photo_url FROM photos WHERE id = ${photoId}
         `;
 
         if (result.length === 0) {
-            return new Response('Photo not found', { status: 404 });
+            return new Response('Photo not found in database', { status: 404 });
         }
 
         const photo = result[0];
+        const photoData = photo.photo_url;
 
-        // Get photo from blob storage
-        const store = getStore('photos');
-        const blobKey = `${photo.user_id}/${photoId}.jpg`;
-
-        const blob = await store.get(blobKey, { type: 'arrayBuffer' });
-
-        if (!blob) {
-            return new Response('Photo file not found', { status: 404 });
+        if (!photoData) {
+            return new Response('Photo data not found', { status: 404 });
         }
 
-        // Return the image
-        return new Response(blob, {
-            headers: {
-                'Content-Type': 'image/jpeg',
-                'Content-Disposition': `inline; filename="photo-${photoId}.jpg"`,
-                'Cache-Control': 'public, max-age=31536000'
-            }
-        });
+        // Check if it's base64 data
+        if (photoData.startsWith('data:image')) {
+            // Extract base64 data
+            const base64Data = photoData.replace(/^data:image\/\w+;base64,/, '');
+            const buffer = Buffer.from(base64Data, 'base64');
+
+            return new Response(buffer, {
+                headers: {
+                    'Content-Type': 'image/jpeg',
+                    'Content-Disposition': `inline; filename="photo-${photoId}.jpg"`,
+                    'Cache-Control': 'public, max-age=31536000'
+                }
+            });
+        } else {
+            // It's a URL, redirect to it
+            return Response.redirect(photoData, 302);
+        }
 
     } catch (error) {
         console.error('Photo view error:', error);
-        return new Response('Error loading photo', { status: 500 });
+        return new Response('Error loading photo: ' + error.message, { status: 500 });
     }
 };
 
