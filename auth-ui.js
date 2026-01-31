@@ -610,16 +610,130 @@ function clearFirebaseConfigUI() {
 }
 
 // =============================================
+// HEADER AUTH BUTTONS
+// =============================================
+
+// Create header auth buttons
+function createHeaderAuthButtons() {
+    const headerAuth = document.getElementById('headerAuth');
+    if (!headerAuth) return;
+
+    const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+
+    if (user) {
+        // User is logged in - show email and logout
+        headerAuth.innerHTML = `
+            <div class="user-info">
+                <span class="user-email-display" title="${user.email}">${user.email}</span>
+                <button class="auth-btn-logout" onclick="handleLogout()">Logout</button>
+            </div>
+        `;
+    } else {
+        // User is not logged in - show login/signup buttons
+        headerAuth.innerHTML = `
+            <button class="auth-btn-small auth-btn-login" onclick="openAuthModal('signin')">Login</button>
+            <button class="auth-btn-small auth-btn-signup" onclick="openAuthModal('signup')">Sign Up</button>
+        `;
+    }
+}
+
+// Handle logout from header
+async function handleLogout() {
+    if (typeof signOut === 'function') {
+        await signOut();
+    }
+    createHeaderAuthButtons();
+    showLoginRequiredOverlay();
+}
+
+// =============================================
+// LOGIN REQUIRED OVERLAY
+// =============================================
+
+// Create login required overlay
+function createLoginRequiredOverlay() {
+    // Check if overlay already exists
+    if (document.getElementById('loginRequiredOverlay')) {
+        return;
+    }
+
+    const overlay = document.createElement('div');
+    overlay.id = 'loginRequiredOverlay';
+    overlay.className = 'login-required-overlay';
+    overlay.innerHTML = `
+        <div class="login-required-content">
+            <h2>📸 Welcome to FE2P PhotoBooth</h2>
+            <p>Please sign in or create an account to use the photo booth and save your photos.</p>
+            <div class="login-required-buttons">
+                <button class="btn btn-secondary" onclick="openAuthModal('signin'); hideLoginRequiredOverlay();">Login</button>
+                <button class="btn btn-primary" onclick="openAuthModal('signup'); hideLoginRequiredOverlay();">Sign Up</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+}
+
+// Show login required overlay
+function showLoginRequiredOverlay() {
+    // Don't show on photo.html (public photo view page)
+    if (window.location.pathname.includes('photo.html')) {
+        return;
+    }
+
+    const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+    if (user) {
+        hideLoginRequiredOverlay();
+        return;
+    }
+
+    createLoginRequiredOverlay();
+    const overlay = document.getElementById('loginRequiredOverlay');
+    if (overlay) {
+        overlay.style.display = 'flex';
+    }
+}
+
+// Hide login required overlay
+function hideLoginRequiredOverlay() {
+    const overlay = document.getElementById('loginRequiredOverlay');
+    if (overlay) {
+        overlay.style.display = 'none';
+    }
+}
+
+// Check if user is authenticated, show overlay if not
+function requireAuth() {
+    const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+    if (!user) {
+        showLoginRequiredOverlay();
+        return false;
+    }
+    return true;
+}
+
+// =============================================
 // INITIALIZATION
 // =============================================
 
 // Initialize auth UI on page load
 function initAuthUI() {
     createUserStatusContainer();
+    createHeaderAuthButtons();
+
+    // Show login required overlay if not authenticated
+    showLoginRequiredOverlay();
 
     // Listen for auth state changes
     window.addEventListener('authStateChanged', (event) => {
         updateUserStatusUI(event.detail.user);
+        createHeaderAuthButtons();
+
+        if (event.detail.user) {
+            hideLoginRequiredOverlay();
+        } else {
+            showLoginRequiredOverlay();
+        }
     });
 
     // Listen for sync status changes
@@ -628,11 +742,11 @@ function initAuthUI() {
     });
 
     // Check initial auth state
-    const user = getCurrentUser();
+    const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
     updateUserStatusUI(user);
 
     // Check initial sync status
-    if (user) {
+    if (user && typeof getSyncStatus === 'function') {
         updateSyncStatusUI(getSyncStatus());
     }
 }
