@@ -1,4 +1,4 @@
-const CACHE_NAME = 'photobooth-v3';
+const CACHE_NAME = 'photobooth-v4';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -11,8 +11,24 @@ const urlsToCache = [
   '/design.js',
   '/print.js',
   '/gdrive.js',
+  '/firebase-config.js',
+  '/firebase-auth.js',
+  '/firebase-sync.js',
+  '/auth-ui.js',
   '/manifest.json'
   // Note: icon files are optional, service worker will work without them
+];
+
+// URLs to never cache (Firebase and other APIs)
+const noCachePatterns = [
+  'firebaseio.com',
+  'googleapis.com',
+  'firebase.com',
+  'firebasestorage.googleapis.com',
+  'firestore.googleapis.com',
+  'identitytoolkit.googleapis.com',
+  'securetoken.googleapis.com',
+  'accounts.google.com'
 ];
 
 // Install Service Worker
