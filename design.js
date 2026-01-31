@@ -276,7 +276,7 @@ function activateSession(sessionId) {
 
 // Delete Session
 function deleteSessionById(sessionId) {
-    if (!confirm('Are you sure you want to delete this session?')) {
+    if (!confirm('Are you sure you want to permanently delete this session? This will also delete it from the cloud.')) {
         return;
     }
 
