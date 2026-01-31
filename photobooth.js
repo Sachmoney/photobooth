@@ -1402,12 +1402,12 @@ async function takeFullscreenPhotoStrip() {
         // Auto-download strip to computer
         autoDownloadPhoto(combinedStrip, `photostrip-${photoId}.jpg`);
 
-        // Auto-upload to cloud if authenticated
-        uploadPhotoToCloud(photoObj);
+        // Show fullscreen review screen with QR code
+        showFullscreenReview(photoObj);
+    } else {
+        // Show controls again if photo capture failed
+        if (fullscreenControls) fullscreenControls.classList.remove('hidden');
     }
-
-    // Show controls again
-    if (fullscreenControls) fullscreenControls.classList.remove('hidden');
 }
 
 // Take single photo with countdown in fullscreen mode
