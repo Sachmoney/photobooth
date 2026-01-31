@@ -1344,11 +1344,34 @@ async function takeFullscreen4x6Collage() {
 
     if (collagePhotos.length === 3) {
         const collage = await create4x6Collage(collagePhotos);
-        saveCollagePhoto(collage);
-    }
 
-    // Show controls again
-    if (fullscreenControls) fullscreenControls.classList.remove('hidden');
+        // Save collage and show review screen in fullscreen mode
+        const photoId = Date.now();
+        const activeSessionId = getActiveSessionId();
+
+        const photoObj = {
+            id: photoId,
+            data: collage,
+            isCollage: true,
+            sessionId: activeSessionId || null,
+            createdAt: new Date().toISOString()
+        };
+
+        const photos = getPhotosFromStorage();
+        photos.push(photoObj);
+        savePhotosToStorage(photos);
+
+        console.log('Collage saved:', photoId, 'Session:', activeSessionId);
+
+        // Auto-download collage to computer
+        autoDownloadPhoto(collage, `collage-${photoId}.jpg`);
+
+        // Show fullscreen review screen with QR code
+        showFullscreenReview(photoObj);
+    } else {
+        // Show controls again if capture failed
+        if (fullscreenControls) fullscreenControls.classList.remove('hidden');
+    }
 }
 
 // Take photo strip in fullscreen mode
