@@ -1,14 +1,15 @@
 // Firebase Configuration
 // Initialize Firebase with your project configuration
 
-// Firebase configuration object - Replace with your Firebase project config
+// Firebase configuration object
 const firebaseConfig = {
-    apiKey: "",
-    authDomain: "",
-    projectId: "",
-    storageBucket: "",
-    messagingSenderId: "",
-    appId: ""
+    apiKey: "AIzaSyDR77TM4FOuPDzgBB8HOaLzIhgzF5BJ-XY",
+    authDomain: "photobooth-b716d.firebaseapp.com",
+    projectId: "photobooth-b716d",
+    storageBucket: "photobooth-b716d.firebasestorage.app",
+    messagingSenderId: "795308725912",
+    appId: "1:795308725912:web:ac106035fcdc69ac8ae2ed",
+    measurementId: "G-VRF4NELF3D"
 };
 
 // Storage keys for Firebase config
