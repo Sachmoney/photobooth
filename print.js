@@ -145,16 +145,27 @@ async function downloadCloudPhoto(url, filename) {
 
 // Delete cloud photo
 async function deleteCloudPhoto(photoId) {
-    const db = typeof getFirebaseDb === 'function' ? getFirebaseDb() : null;
-    const userId = typeof getUserId === 'function' ? getUserId() : null;
+    const token = typeof getAuthToken === 'function' ? getAuthToken() : null;
 
-    if (!db || !userId) {
+    if (!token) {
+        console.log('Not authenticated, skipping cloud delete');
         return;
     }
 
     try {
-        await db.collection(`users/${userId}/photos`).doc(String(photoId)).delete();
-        console.log('Cloud photo deleted:', photoId);
+        const response = await fetch(`/api/delete-photos?id=${photoId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            console.log('Cloud photo deleted:', photoId);
+        } else {
+            console.error('Failed to delete cloud photo:', result.error);
+        }
     } catch (error) {
         console.error('Error deleting cloud photo:', error);
     }
