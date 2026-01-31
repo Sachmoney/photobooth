@@ -48,7 +48,7 @@ function shouldNotCache(url) {
 self.addEventListener('fetch', (event) => {
   const requestUrl = event.request.url;
 
-  // Never cache Firebase and API requests
+  // Never cache API requests
   if (shouldNotCache(requestUrl)) {
     event.respondWith(fetch(event.request));
     return;
