@@ -109,12 +109,14 @@ export default async (req, context) => {
     const id = photoId || Date.now().toString();
 
     try {
-        // Store photo data in database
+        // Store photo data in database (simple insert, no ON CONFLICT to avoid updated_at issue)
+        // First try to delete any existing photo with same ID
+        await sql`DELETE FROM photos WHERE id = ${id}`;
+
+        // Then insert the new photo
         await sql`
             INSERT INTO photos (id, user_id, session_id, photo_url, is_strip, is_collage, created_at)
             VALUES (${id}, ${user.id}, ${sessionId || null}, ${photoData}, ${isStrip || false}, ${isCollage || false}, NOW())
-            ON CONFLICT (id) DO UPDATE
-            SET photo_url = EXCLUDED.photo_url, updated_at = NOW()
         `;
 
         console.log('Photo saved successfully:', id);
