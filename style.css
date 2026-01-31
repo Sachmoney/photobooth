@@ -71,9 +71,19 @@ header {
     gap: 20px;
 }
 
-.header-center {
+.header-nav .back-btn {
     flex: 1;
+    text-align: left;
+}
+
+.header-center {
+    flex: 2;
     text-align: center;
+}
+
+.header-nav .header-auth {
+    flex: 1;
+    justify-content: flex-end;
 }
 
 header h1 {
