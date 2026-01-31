@@ -161,6 +161,17 @@ function getSessions() {
 function saveSessions(sessions) {
     try {
         localStorage.setItem(StorageKeys.SESSIONS, JSON.stringify(sessions));
+
+        // Trigger cloud sync if authenticated
+        if (typeof isAuthenticated === 'function' && isAuthenticated()) {
+            if (typeof syncSessionsToCloud === 'function') {
+                // Debounce sync to avoid too many requests
+                clearTimeout(window._sessionSyncTimeout);
+                window._sessionSyncTimeout = setTimeout(() => {
+                    syncSessionsToCloud(sessions);
+                }, 1000);
+            }
+        }
     } catch (error) {
         console.error('Error saving sessions:', error);
     }
