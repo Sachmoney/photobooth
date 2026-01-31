@@ -767,21 +767,26 @@ async function createPhotoStrip(stripPhotos) {
     const photoId = Date.now();
     const activeSessionId = getActiveSessionId();
 
-    const photos = getPhotosFromStorage();
-    photos.push({
+    const photoObj = {
         id: photoId,
         data: combinedStrip,
         isStrip: true,
         stripPhotos: stripPhotos,
         sessionId: activeSessionId || null,
         createdAt: new Date().toISOString()
-    });
+    };
+
+    const photos = getPhotosFromStorage();
+    photos.push(photoObj);
     savePhotosToStorage(photos);
 
     console.log('Photo strip saved:', photoId, 'Session:', activeSessionId);
 
     // Auto-upload strip to Google Drive
     uploadPhotoToGDrive(combinedStrip, photoId, true);
+
+    // Auto-upload to Firebase Cloud Storage if authenticated
+    uploadPhotoToFirebase(photoObj);
 }
 
 // Create Combined Strip Image
