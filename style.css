@@ -2218,3 +2218,254 @@ footer {
     }
 }
 
+/* =============================================
+   FULLSCREEN PHOTO REVIEW SCREEN
+   ============================================= */
+
+.fullscreen-review {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+    z-index: 100;
+    overflow: hidden;
+}
+
+.fullscreen-review.active {
+    display: flex;
+}
+
+.review-content {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    padding: 40px;
+    gap: 40px;
+}
+
+.review-photo-section {
+    flex: 1.5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.review-photo-section img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 100px rgba(212, 175, 55, 0.2);
+    object-fit: contain;
+}
+
+.review-share-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.review-share-section h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.review-qr-container {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    margin: 20px 0;
+    box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);
+}
+
+.review-qr-container img {
+    width: 220px;
+    height: 220px;
+    display: block;
+}
+
+.review-instruction {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+}
+
+.review-share-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.review-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px 30px;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    min-width: 100px;
+}
+
+.review-btn span:first-child {
+    font-size: 1.8rem;
+}
+
+.review-btn.download-btn {
+    background: linear-gradient(135deg, #10b981, #34d399);
+    color: white;
+}
+
+.review-btn.share-btn {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    color: white;
+}
+
+.review-btn.email-btn {
+    background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+    color: white;
+}
+
+.review-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.review-btn:active {
+    transform: translateY(0);
+}
+
+.review-done-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 50px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: #000;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 1.3rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.review-done-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 40px rgba(212, 175, 55, 0.4);
+}
+
+.review-done-btn span {
+    font-size: 1.5rem;
+}
+
+/* Responsive Review Screen */
+@media (max-width: 900px) {
+    .review-content {
+        flex-direction: column;
+        padding: 20px;
+        gap: 20px;
+    }
+
+    .review-photo-section {
+        flex: none;
+        height: 45%;
+    }
+
+    .review-share-section {
+        flex: none;
+        height: 55%;
+        padding: 10px;
+    }
+
+    .review-share-section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .review-qr-container {
+        padding: 15px;
+        margin: 10px 0;
+    }
+
+    .review-qr-container img {
+        width: 150px;
+        height: 150px;
+    }
+
+    .review-instruction {
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+    }
+
+    .review-share-buttons {
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .review-btn {
+        padding: 12px 20px;
+        min-width: 80px;
+    }
+
+    .review-btn span:first-child {
+        font-size: 1.4rem;
+    }
+
+    .review-done-btn {
+        padding: 15px 35px;
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .review-content {
+        padding: 15px;
+    }
+
+    .review-photo-section {
+        height: 40%;
+    }
+
+    .review-share-section h2 {
+        font-size: 1.2rem;
+    }
+
+    .review-qr-container img {
+        width: 120px;
+        height: 120px;
+    }
+
+    .review-btn {
+        padding: 10px 15px;
+        font-size: 0.85rem;
+    }
+
+    .review-btn span:first-child {
+        font-size: 1.2rem;
+    }
+
+    .review-done-btn {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
+}
+
