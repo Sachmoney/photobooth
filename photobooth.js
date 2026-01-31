@@ -443,12 +443,16 @@ function autoDownloadPhoto(photoData, filename) {
 async function uploadPhotoToCloud(photo) {
     // Check if API client is available and user is authenticated
     if (typeof syncPhotoToStorage !== 'function') {
-        console.log('Cloud sync not available');
+        console.log('Cloud sync not available, showing local QR');
+        // Still show QR code with local photo data
+        showQRCode(photo.id, photo.data);
         return;
     }
 
     if (typeof isAuthenticated !== 'function' || !isAuthenticated()) {
-        console.log('Not authenticated, skipping cloud upload');
+        console.log('Not authenticated, showing local QR');
+        // Still show QR code with local photo data
+        showQRCode(photo.id, photo.data);
         return;
     }
 
@@ -464,11 +468,15 @@ async function uploadPhotoToCloud(photo) {
                 photos[idx].cloudUrl = result.url;
                 savePhotosToStorage(photos, true); // Skip cloud sync to avoid loop
             }
+            // Show QR code with cloud URL
+            showQRCode(result.photoId || photo.id, photo.data, true);
         } else if (result.queued) {
             console.log('Photo queued for cloud upload:', photo.id);
+            showQRCode(photo.id, photo.data);
         }
     } catch (error) {
         console.error('Cloud upload error:', error);
+        showQRCode(photo.id, photo.data);
     }
 }
 
