@@ -144,16 +144,34 @@ export default async (req, context) => {
             }), { headers: corsHeaders });
         }
 
-        // POST - Create new session
+        // POST - Create or update session (upsert)
         if (req.method === 'POST') {
             const { id, name, designUrl, settings } = await req.json();
 
             const newId = id || Date.now().toString();
 
-            await sql`
-                INSERT INTO sessions (id, user_id, name, design_url, settings)
-                VALUES (${newId}, ${user.id}, ${name}, ${designUrl || null}, ${JSON.stringify(settings || {})})
+            // Check if session exists
+            const existing = await sql`
+                SELECT id FROM sessions WHERE id = ${newId} AND user_id = ${user.id}
             `;
+
+            if (existing.length > 0) {
+                // Update existing session
+                await sql`
+                    UPDATE sessions
+                    SET name = ${name},
+                        design_url = ${designUrl || null},
+                        settings = ${JSON.stringify(settings || {})}::jsonb,
+                        updated_at = NOW()
+                    WHERE id = ${newId} AND user_id = ${user.id}
+                `;
+            } else {
+                // Insert new session
+                await sql`
+                    INSERT INTO sessions (id, user_id, name, design_url, settings)
+                    VALUES (${newId}, ${user.id}, ${name}, ${designUrl || null}, ${JSON.stringify(settings || {})})
+                `;
+            }
 
             return new Response(JSON.stringify({
                 success: true,
