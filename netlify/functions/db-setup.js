@@ -1,10 +1,32 @@
 // Database Setup - Run once to create tables
-// Trigger: GET /.netlify/functions/db-setup
+// Trigger: GET /api/db-setup
 
 import { neon } from '@neondatabase/serverless';
 
 export default async (req, context) => {
-    const sql = neon(process.env.DATABASE_URL);
+    // Check if DATABASE_URL is set
+    if (!process.env.DATABASE_URL) {
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'DATABASE_URL environment variable is not set. Please add it in Netlify Site Settings > Environment Variables.'
+        }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
+    let sql;
+    try {
+        sql = neon(process.env.DATABASE_URL);
+    } catch (error) {
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Failed to connect to database: ' + error.message
+        }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
 
     try {
         // Create users table
