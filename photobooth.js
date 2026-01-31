@@ -1919,16 +1919,10 @@ function showFullscreenReview(photoObj) {
     const baseUrl = window.location.origin;
     const photoUrl = `${baseUrl}/photo.html?id=${photoObj.id}`;
 
-    if (typeof QRCode === 'function' && reviewQRCode) {
-        try {
-            const qrDataUrl = QRCode(photoUrl, {
-                size: 220,
-                margin: 2,
-                errorCorrectionLevel: 'M'
-            });
+    if (typeof qrcode === 'function' && reviewQRCode) {
+        const qrDataUrl = generateQRCodeDataUrl(photoUrl, 220);
+        if (qrDataUrl) {
             reviewQRCode.src = qrDataUrl;
-        } catch (error) {
-            console.error('QR code generation error:', error);
         }
     }
 
