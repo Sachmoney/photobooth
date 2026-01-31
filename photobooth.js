@@ -708,6 +708,9 @@ function saveCollagePhoto(photoData) {
 
     console.log('Collage saved:', photoId, 'Session:', activeSessionId);
 
+    // Auto-download collage to computer
+    autoDownloadPhoto(photoData, `collage-${photoId}.jpg`);
+
     // Auto-upload to Google Drive
     uploadPhotoToGDrive(photoData, photoId, false);
 
