@@ -141,6 +141,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load initial data
     loadSessions();
     loadActiveSession();
+
+    // Listen for session sync from cloud
+    window.addEventListener('sessionsLoaded', () => {
+        console.log('Sessions synced from cloud, refreshing list');
+        loadSessions();
+        loadActiveSession();
+    });
+
+    window.addEventListener('activeSessionChanged', () => {
+        console.log('Active session changed from cloud');
+        loadSessions();
+        loadActiveSession();
+    });
 });
 
 // Toggle section visibility
