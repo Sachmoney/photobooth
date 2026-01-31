@@ -278,12 +278,39 @@ function deletePhoto(photoId) {
     savePhotosToStorage(filtered);
 }
 
-// Clear Gallery
-function clearGallery() {
-    if (confirm('Are you sure you want to clear all photos?')) {
-        savePhotosToStorage([]);
-        loadGallery();
+// Clear Gallery (local and cloud)
+async function clearGallery() {
+    if (!confirm('Are you sure you want to clear all photos? This will delete them from the cloud too.')) {
+        return;
     }
+
+    // Clear local storage
+    savePhotosToStorage([]);
+
+    // Clear from cloud if authenticated
+    if (typeof isAuthenticated === 'function' && isAuthenticated()) {
+        try {
+            const token = typeof getAuthToken === 'function' ? getAuthToken() : null;
+            if (token) {
+                const response = await fetch('/api/delete-photos', {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const result = await response.json();
+                if (result.success) {
+                    console.log('Cloud photos deleted:', result.message);
+                } else {
+                    console.error('Failed to delete cloud photos:', result.error);
+                }
+            }
+        } catch (error) {
+            console.error('Error deleting cloud photos:', error);
+        }
+    }
+
+    loadGallery();
 }
 
 // Print All Photos
