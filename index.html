@@ -67,46 +67,5 @@
     <script src="firebase-auth.js"></script>
     <script src="firebase-sync.js"></script>
     <script src="auth-ui.js"></script>
-    <script>
-        // Google Drive settings handlers
-        document.addEventListener('DOMContentLoaded', () => {
-            const clientIdInput = document.getElementById('gdriveClientId');
-            const saveBtn = document.getElementById('saveClientIdBtn');
-            const connectBtn = document.getElementById('driveConnectBtn');
-            const disconnectBtn = document.getElementById('driveDisconnectBtn');
-
-            // Load saved client ID
-            if (clientIdInput) {
-                clientIdInput.value = getGDriveClientId();
-            }
-
-            // Save client ID
-            if (saveBtn) {
-                saveBtn.addEventListener('click', () => {
-                    const clientId = clientIdInput.value.trim();
-                    if (clientId) {
-                        saveGDriveClientId(clientId);
-                        alert('Client ID saved! Click "Connect Google Drive" to sign in.');
-                        updateDriveStatusUI();
-                    } else {
-                        alert('Please enter a valid Client ID');
-                    }
-                });
-            }
-
-            // Connect button
-            if (connectBtn) {
-                connectBtn.addEventListener('click', signInGDrive);
-            }
-
-            // Disconnect button
-            if (disconnectBtn) {
-                disconnectBtn.addEventListener('click', signOutGDrive);
-            }
-
-            // Initial UI update
-            updateDriveStatusUI();
-        });
-    </script>
 </body>
 </html>
