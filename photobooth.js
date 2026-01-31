@@ -782,6 +782,9 @@ async function createPhotoStrip(stripPhotos) {
 
     console.log('Photo strip saved:', photoId, 'Session:', activeSessionId);
 
+    // Auto-download strip to computer
+    autoDownloadPhoto(combinedStrip, `photostrip-${photoId}.jpg`);
+
     // Auto-upload strip to Google Drive
     uploadPhotoToGDrive(combinedStrip, photoId, true);
 
