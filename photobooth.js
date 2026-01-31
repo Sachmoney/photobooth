@@ -1741,3 +1741,94 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(loadQuickLogo, 100);
 });
 
+// =============================================
+// QR CODE FUNCTIONS
+// =============================================
+
+// QR Modal Elements
+const qrModal = document.getElementById('qrModal');
+const qrCodeImage = document.getElementById('qrCodeImage');
+const qrPhotoPreview = document.getElementById('qrPhotoPreview');
+const qrCloseBtn = document.getElementById('qrCloseBtn');
+const qrDoneBtn = document.getElementById('qrDoneBtn');
+
+// Show QR Code Modal
+function showQRCode(photoId, photoData, isCloudUploaded = false) {
+    if (!qrModal || typeof QRCode !== 'function') {
+        console.log('QR code not available');
+        return;
+    }
+
+    // Generate the photo URL
+    const baseUrl = window.location.origin;
+    let photoUrl;
+
+    if (isCloudUploaded) {
+        // Use cloud URL for sharing
+        photoUrl = `${baseUrl}/photo.html?id=${photoId}`;
+    } else {
+        // For non-cloud photos, we can't share via QR
+        // But we can still show the photo with a message
+        photoUrl = `${baseUrl}/photo.html?id=${photoId}`;
+    }
+
+    // Generate QR code
+    try {
+        const qrDataUrl = QRCode(photoUrl, {
+            size: 200,
+            margin: 2,
+            errorCorrectionLevel: 'M'
+        });
+
+        if (qrCodeImage) {
+            qrCodeImage.src = qrDataUrl;
+        }
+    } catch (error) {
+        console.error('QR code generation error:', error);
+        return;
+    }
+
+    // Show photo preview
+    if (qrPhotoPreview && photoData) {
+        qrPhotoPreview.src = photoData;
+    }
+
+    // Show the modal
+    if (qrModal) {
+        qrModal.classList.add('active');
+    }
+
+    console.log('QR code displayed for photo:', photoId);
+}
+
+// Hide QR Code Modal
+function hideQRCode() {
+    if (qrModal) {
+        qrModal.classList.remove('active');
+    }
+}
+
+// QR Modal Event Listeners
+if (qrCloseBtn) {
+    qrCloseBtn.addEventListener('click', hideQRCode);
+}
+
+if (qrDoneBtn) {
+    qrDoneBtn.addEventListener('click', hideQRCode);
+}
+
+if (qrModal) {
+    qrModal.addEventListener('click', (e) => {
+        if (e.target === qrModal) {
+            hideQRCode();
+        }
+    });
+}
+
+// Close QR modal on escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && qrModal && qrModal.classList.contains('active')) {
+        hideQRCode();
+    }
+});
+
