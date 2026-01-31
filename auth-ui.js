@@ -718,7 +718,7 @@ function requireAuth() {
 
 // Initialize auth UI on page load
 function initAuthUI() {
-    createUserStatusContainer();
+    // Only use header auth buttons (top right corner)
     createHeaderAuthButtons();
 
     // Show login required overlay if not authenticated
