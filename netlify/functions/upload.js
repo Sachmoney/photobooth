@@ -31,7 +31,15 @@ export default async (req, context) => {
         }), { status: 500, headers: corsHeaders });
     }
 
-    const sql = neon(process.env.DATABASE_URL);
+    let sql;
+    try {
+        sql = neon(process.env.DATABASE_URL);
+    } catch (e) {
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Database connection failed: ' + e.message
+        }), { status: 500, headers: corsHeaders });
+    }
 
     // Get user from token
     const authHeader = req.headers.get('Authorization');
@@ -40,10 +48,11 @@ export default async (req, context) => {
     if (!token) {
         return new Response(JSON.stringify({
             success: false,
-            error: 'Unauthorized'
+            error: 'No auth token provided'
         }), { status: 401, headers: corsHeaders });
     }
 
+    let user;
     try {
         const userResult = await sql`
             SELECT u.id, u.email
@@ -59,25 +68,56 @@ export default async (req, context) => {
             }), { status: 401, headers: corsHeaders });
         }
 
-        const user = userResult[0];
-        const { photoData, photoId, sessionId, isStrip, isCollage } = await req.json();
+        user = userResult[0];
+    } catch (e) {
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Auth check failed: ' + e.message
+        }), { status: 500, headers: corsHeaders });
+    }
 
-        if (!photoData) {
-            return new Response(JSON.stringify({
-                success: false,
-                error: 'No photo data provided'
-            }), { status: 400, headers: corsHeaders });
-        }
+    let body;
+    try {
+        body = await req.json();
+    } catch (e) {
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Invalid JSON body: ' + e.message
+        }), { status: 400, headers: corsHeaders });
+    }
 
-        const id = photoId || Date.now().toString();
+    const { photoData, photoId, sessionId, isStrip, isCollage } = body;
 
-        // Store photo data directly in database
+    if (!photoData) {
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'No photo data provided'
+        }), { status: 400, headers: corsHeaders });
+    }
+
+    // Check photo size
+    const photoSizeKB = Math.round(photoData.length / 1024);
+    console.log('Photo size:', photoSizeKB, 'KB');
+
+    if (photoSizeKB > 5000) {
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Photo too large: ' + photoSizeKB + 'KB (max 5MB)'
+        }), { status: 400, headers: corsHeaders });
+    }
+
+    const id = photoId || Date.now().toString();
+
+    try {
+        // Store photo data in database
         await sql`
-            INSERT INTO photos (id, user_id, session_id, photo_url, is_strip, is_collage)
-            VALUES (${id}, ${user.id}, ${sessionId || null}, ${photoData}, ${isStrip || false}, ${isCollage || false})
+            INSERT INTO photos (id, user_id, session_id, photo_url, is_strip, is_collage, created_at)
+            VALUES (${id}, ${user.id}, ${sessionId || null}, ${photoData}, ${isStrip || false}, ${isCollage || false}, NOW())
             ON CONFLICT (id) DO UPDATE
-            SET photo_url = ${photoData}, updated_at = NOW()
+            SET photo_url = EXCLUDED.photo_url, updated_at = NOW()
         `;
+
+        console.log('Photo saved successfully:', id);
 
         return new Response(JSON.stringify({
             success: true,
@@ -86,10 +126,10 @@ export default async (req, context) => {
         }), { headers: corsHeaders });
 
     } catch (error) {
-        console.error('Upload error:', error);
+        console.error('Database insert error:', error);
         return new Response(JSON.stringify({
             success: false,
-            error: error.message
+            error: 'Database error: ' + error.message
         }), { status: 500, headers: corsHeaders });
     }
 };
