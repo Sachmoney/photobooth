@@ -1400,19 +1400,24 @@ async function takeFullscreenPhotoStrip() {
         const photoId = Date.now();
         const activeSessionId = getActiveSessionId();
 
-        const photos = getPhotosFromStorage();
-        photos.push({
+        const photoObj = {
             id: photoId,
             data: combinedStrip,
             isStrip: true,
             stripPhotos: stripPhotos,
             sessionId: activeSessionId || null,
             createdAt: new Date().toISOString()
-        });
+        };
+
+        const photos = getPhotosFromStorage();
+        photos.push(photoObj);
         savePhotosToStorage(photos);
 
-        // Auto-upload to Google Drive
-        uploadPhotoToGDrive(combinedStrip, photoId, true);
+        // Auto-download strip to computer
+        autoDownloadPhoto(combinedStrip, `photostrip-${photoId}.jpg`);
+
+        // Auto-upload to cloud if authenticated
+        uploadPhotoToCloud(photoObj);
     }
 
     // Show controls again
