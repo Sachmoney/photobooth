@@ -467,13 +467,13 @@ async function uploadPhotoToCloud(photo) {
     // Check if API client is available and user is authenticated
     if (typeof syncPhotoToStorage !== 'function') {
         console.error('Cloud sync not available - syncPhotoToStorage not defined');
-        showQRCode(photo.id, photo.data);
+        showQRCode(photo.id, photo.data, false);
         return;
     }
 
     if (typeof isAuthenticated !== 'function') {
         console.error('isAuthenticated not defined');
-        showQRCode(photo.id, photo.data);
+        showQRCode(photo.id, photo.data, false);
         return;
     }
 
@@ -482,7 +482,7 @@ async function uploadPhotoToCloud(photo) {
 
     if (!authStatus) {
         console.log('Not authenticated, showing local QR');
-        showQRCode(photo.id, photo.data);
+        showQRCode(photo.id, photo.data, false);
         return;
     }
 
@@ -504,15 +504,50 @@ async function uploadPhotoToCloud(photo) {
             showQRCode(result.photoId || photo.id, photo.data, true);
         } else if (result.queued) {
             console.log('Photo queued for cloud upload:', photo.id);
-            showQRCode(photo.id, photo.data);
+            showQRCode(photo.id, photo.data, false);
         } else {
             console.error('Upload failed:', result.error || result);
-            showQRCode(photo.id, photo.data);
+            showUploadError('Upload failed: ' + (result.error || 'Unknown error'));
         }
     } catch (error) {
         console.error('Cloud upload error:', error);
-        showQRCode(photo.id, photo.data);
+        showUploadError('Upload failed: ' + error.message);
     }
+}
+
+// Show upload error notification
+function showUploadError(message) {
+    console.error(message);
+    // Create error notification
+    const notification = document.createElement('div');
+    notification.className = 'upload-error-notification';
+    notification.innerHTML = `
+        <div class="upload-error-content">
+            <span class="upload-error-icon">⚠️</span>
+            <span class="upload-error-message">${message}</span>
+            <span class="upload-error-hint">Photo saved locally. Try again later.</span>
+        </div>
+    `;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #ff4444;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        z-index: 10000;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        animation: slideDown 0.3s ease;
+    `;
+    document.body.appendChild(notification);
+
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        notification.style.animation = 'slideUp 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 5000);
 }
 
 // =============================================
