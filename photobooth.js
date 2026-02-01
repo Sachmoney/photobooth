@@ -421,7 +421,7 @@ function capturePhoto() {
 }
 
 // Save Photo
-function savePhoto(photoData) {
+async function savePhoto(photoData) {
     const photos = getPhotosFromStorage();
     const photoId = Date.now();
     const activeSessionId = getActiveSessionId();
@@ -441,8 +441,8 @@ function savePhoto(photoData) {
     // Auto-download photo to computer
     autoDownloadPhoto(photoData, `photo-${photoId}.jpg`);
 
-    // Auto-upload to cloud if authenticated
-    uploadPhotoToCloud(photoObj);
+    // Auto-upload to cloud if authenticated - wait for completion
+    await uploadPhotoToCloud(photoObj);
 }
 
 // Auto-download photo to computer
