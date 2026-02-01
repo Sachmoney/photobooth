@@ -698,33 +698,11 @@ async function create4x6Collage(photos) {
                     ctx.fillStyle = settings.background ? settings.background.color : '#ffffff';
                     ctx.fillRect(logoPos.x, logoPos.y, cellWidth, cellHeight);
 
-                    // Calculate logo size to fit in cell
-                    const logoScale = (photo4x6Settings.size || 80) / 100;
-                    const maxLogoWidth = cellWidth * logoScale;
-                    const maxLogoHeight = cellHeight * logoScale;
-
-                    const logoAspect = logoImg.width / logoImg.height;
-                    let logoWidth, logoHeight;
-
-                    if (logoAspect > 1) {
-                        logoWidth = Math.min(maxLogoWidth, logoImg.width);
-                        logoHeight = logoWidth / logoAspect;
-                        if (logoHeight > maxLogoHeight) {
-                            logoHeight = maxLogoHeight;
-                            logoWidth = logoHeight * logoAspect;
-                        }
-                    } else {
-                        logoHeight = Math.min(maxLogoHeight, logoImg.height);
-                        logoWidth = logoHeight * logoAspect;
-                        if (logoWidth > maxLogoWidth) {
-                            logoWidth = maxLogoWidth;
-                            logoHeight = logoWidth / logoAspect;
-                        }
-                    }
-
-                    // Center logo in cell
-                    const logoX = logoPos.x + (cellWidth - logoWidth) / 2;
-                    const logoY = logoPos.y + (cellHeight - logoHeight) / 2;
+                    // Fill the entire corner cell with the logo
+                    const logoWidth = cellWidth;
+                    const logoHeight = cellHeight;
+                    const logoX = logoPos.x;
+                    const logoY = logoPos.y;
 
                     ctx.save();
                     ctx.globalAlpha = (photo4x6Settings.opacity || 100) / 100;
