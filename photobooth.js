@@ -808,8 +808,8 @@ async function createPhotoStrip(stripPhotos) {
     // Auto-download strip to computer
     autoDownloadPhoto(combinedStrip, `photostrip-${photoId}.jpg`);
 
-    // Auto-upload to cloud if authenticated
-    uploadPhotoToCloud(photoObj);
+    // Auto-upload to cloud if authenticated - wait for completion
+    await uploadPhotoToCloud(photoObj);
 }
 
 // Create Combined Strip Image
