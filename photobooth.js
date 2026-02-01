@@ -759,7 +759,7 @@ async function create4x6Collage(photos) {
 }
 
 // Save Collage Photo
-function saveCollagePhoto(photoData) {
+async function saveCollagePhoto(photoData) {
     const photos = getPhotosFromStorage();
     const photoId = Date.now();
     const activeSessionId = getActiveSessionId();
@@ -780,8 +780,8 @@ function saveCollagePhoto(photoData) {
     // Auto-download collage to computer
     autoDownloadPhoto(photoData, `collage-${photoId}.jpg`);
 
-    // Auto-upload to cloud if authenticated
-    uploadPhotoToCloud(photoObj);
+    // Auto-upload to cloud if authenticated - wait for completion
+    await uploadPhotoToCloud(photoObj);
 }
 
 // Create Photo Strip
